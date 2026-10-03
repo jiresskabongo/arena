@@ -24,7 +24,8 @@
     "scanner": "Access control",
     "subscription": "Subscription",
     "settings": "Settings",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "plan": "Plan & quotas"
   },
   "auth": {
     "login": {
@@ -107,6 +108,58 @@
       "active": "Active",
       "empty": "No active sessions.",
       "loadError": "Could not load sessions. Please retry."
+    },
+    "plan": {
+      "title": "Plan & quotas",
+      "subtitle": "Subscription, usage quotas and available plans for {org}.",
+      "superAdminNote": "Platform space: plans apply to customer organizations, not to the super admin account.",
+      "noSubscription": "No subscription",
+      "trialBadge": "Free trial",
+      "activeBadge": "Active",
+      "expiredBadge": "Trial over",
+      "trialBody": "Free trial until {until} — {days} day(s) left.",
+      "trialOverBody": "Your trial period is over. Your data is kept, but new creations are blocked.",
+      "currentBody": "You are currently on the {plan} plan.",
+      "choosePlan": "Choose a plan",
+      "endingSoonTitle": "Your trial ends in {days} day(s)",
+      "endingSoonBody": "Choose a plan before the trial ends to keep access to all features.",
+      "usageTitle": "Usage quotas",
+      "usageBody": "Real consumption of your organization, measured from your data (events, guests, media, communications, AI).",
+      "noUsage": "Nothing to show yet.",
+      "unlimited": "Unlimited",
+      "quotaReached": "Quota reached: {label}. Pick a higher plan to continue.",
+      "quota": {
+        "events": "Active events",
+        "guestsPerEvent": "Guests per event",
+        "members": "Team members",
+        "storageMb": "Storage (MB)",
+        "emailsPerMonth": "Emails this month",
+        "smsPerMonth": "SMS this month",
+        "aiCreditsPerMonth": "AI credits this month"
+      },
+      "plansTitle": "Plan comparison",
+      "plansBody": "Prices shown in your currency ({org_currency}) — monthly or yearly billing.",
+      "currentPlan": "Current plan",
+      "recommended": "Recommended",
+      "perMonth": "month",
+      "perYear": "or {amount} / year",
+      "priceUnavailable": "Price unavailable in this currency",
+      "changePlan": "Change plan",
+      "changeSoon": "Online payment will be available in a later version (mock provider).",
+      "feature": {
+        "premiumTemplates": "Premium templates",
+        "communications": "Communications (email, SMS, WhatsApp)",
+        "advancedStats": "Advanced statistics",
+        "team": "Team features",
+        "whiteLabel": "White label"
+      },
+      "limit": {
+        "events": "Active events",
+        "guestsPerEvent": "Guests per event",
+        "collaborators": "Collaborators",
+        "aiCreditsPerMonth": "AI credits / month",
+        "storageMb": "Storage"
+      }
     }
   },
   "dashboard": {
@@ -126,7 +179,12 @@
     "nextTitle": "In the meantime…",
     "nextBody": "Manage your sessions or browse the demo outbox. The events, studio and guests modules arrive in phases 4-6.",
     "sessions": "My sessions",
-    "outbox": "Outbox (demo)"
+    "outbox": "Outbox (demo)",
+    "trialEndsTitle": "Trial: {days} day(s) left",
+    "trialEndsBody": "Choose a plan before the trial ends to keep full access.",
+    "trialOverTitle": "Trial over",
+    "trialOverBody": "Your data is kept. Choose a plan to create new events.",
+    "goPlan": "See plans"
   },
   "outbox": {
     "title": "Outbox",

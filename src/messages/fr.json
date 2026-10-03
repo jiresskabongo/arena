@@ -24,7 +24,8 @@
     "scanner": "Contrôle d'accès",
     "subscription": "Abonnement",
     "settings": "Paramètres",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "plan": "Plan & quotas"
   },
   "auth": {
     "login": {
@@ -107,6 +108,58 @@
       "active": "Active",
       "empty": "Aucune session active.",
       "loadError": "Impossible de charger les sessions. Réessayez."
+    },
+    "plan": {
+      "title": "Plan & quotas",
+      "subtitle": "Abonnement, quotas d'usage et plans disponibles pour {org}.",
+      "superAdminNote": "Espace plateforme : les plans s'appliquent aux organisations clientes, pas au compte super admin.",
+      "noSubscription": "Aucun abonnement",
+      "trialBadge": "Essai gratuit",
+      "activeBadge": "Actif",
+      "expiredBadge": "Essai terminé",
+      "trialBody": "Essai gratuit jusqu'au {until} — {days} jour(s) restant(s).",
+      "trialOverBody": "Votre période d'essai est terminée. Vos données sont conservées, mais les nouvelles créations sont bloquées.",
+      "currentBody": "Vous êtes actuellement sur le plan {plan}.",
+      "choosePlan": "Choisir un plan",
+      "endingSoonTitle": "Votre essai se termine dans {days} jour(s)",
+      "endingSoonBody": "Choisissez un plan avant la fin de l'essai pour garder l'accès à toutes les fonctionnalités.",
+      "usageTitle": "Quotas d'usage",
+      "usageBody": "Consommation réelle de votre organisation, mesurée sur vos données (événement, invités, médias, communications, IA).",
+      "noUsage": "Aucun usage à afficher.",
+      "unlimited": "Illimité",
+      "quotaReached": "Quota atteint : {label}. Choisissez un plan supérieur pour continuer.",
+      "quota": {
+        "events": "Événements actifs",
+        "guestsPerEvent": "Invités par événement",
+        "members": "Membres de l'équipe",
+        "storageMb": "Stockage (Mo)",
+        "emailsPerMonth": "E-mails ce mois-ci",
+        "smsPerMonth": "SMS ce mois-ci",
+        "aiCreditsPerMonth": "Crédits IA ce mois-ci"
+      },
+      "plansTitle": "Comparaison des plans",
+      "plansBody": "Prix affichés dans votre devise ({org_currency}) — facturation mensuelle ou annuelle.",
+      "currentPlan": "Plan actuel",
+      "recommended": "Recommandé",
+      "perMonth": "mois",
+      "perYear": "ou {amount} / an",
+      "priceUnavailable": "Prix non disponible dans cette devise",
+      "changePlan": "Changer de plan",
+      "changeSoon": "Le paiement en ligne sera disponible dans une prochaine version (fournisseur mock).",
+      "feature": {
+        "premiumTemplates": "Templates premium",
+        "communications": "Communications (e-mail, SMS, WhatsApp)",
+        "advancedStats": "Statistiques avancées",
+        "team": "Fonctions d'équipe",
+        "whiteLabel": "Marque blanche"
+      },
+      "limit": {
+        "events": "Événements actifs",
+        "guestsPerEvent": "Invités par événement",
+        "collaborators": "Collaborateurs",
+        "aiCreditsPerMonth": "Crédits IA / mois",
+        "storageMb": "Stockage"
+      }
     }
   },
   "dashboard": {
@@ -126,7 +179,12 @@
     "nextTitle": "En attendant…",
     "nextBody": "Gérez vos connexions ou consultez la boîte d'envoi démo. Les modules événements, studio et invités arrivent en phase 4-6.",
     "sessions": "Mes sessions",
-    "outbox": "Boîte d'envoi (démo)"
+    "outbox": "Boîte d'envoi (démo)",
+    "trialEndsTitle": "Essai : {days} jour(s) restant(s)",
+    "trialEndsBody": "Choisissez un plan avant la fin de l'essai pour conserver l'accès complet.",
+    "trialOverTitle": "Essai terminé",
+    "trialOverBody": "Vos données sont conservées. Choisissez un plan pour créer de nouveaux événements.",
+    "goPlan": "Voir les plans"
   },
   "outbox": {
     "title": "Boîte d'envoi",

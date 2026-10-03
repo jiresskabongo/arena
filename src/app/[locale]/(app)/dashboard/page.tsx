@@ -6,7 +6,8 @@ import { getAuth } from '@/server/auth/session';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ShieldCheck, MailWarning, Settings, Hourglass, CalendarDays, Users, LayoutGrid } from 'lucide-react';
+import { ShieldCheck, MailWarning, CreditCard, Hourglass, CalendarDays, Users, LayoutGrid, AlertTriangle } from 'lucide-react';
+import { getSubscriptionView } from '@/server/services/subscription';
 
 export default async function DashboardPage({
   params,
@@ -27,10 +28,16 @@ export default async function DashboardPage({
   // Organisation active (CDC §6 : dérivée de la session, jamais du client)
   const activeOrg = isSuperAdmin
     ? null
-    : await prisma.userActiveOrg.findUnique({
-        where: { userId: auth.user.id },
-        include: { organization: true },
-      });
+      : await prisma.userActiveOrg.findUnique({
+          where: { userId: auth.user.id },
+          include: { organization: true },
+        });
+
+  // Alerte essai (CDC §59) — visible par tous les rôles de l'org
+  const subscription =
+    activeOrg && activeOrg.organization.isActive
+      ? await getSubscriptionView(activeOrg.organization.id)
+      : null;
 
   return (
     <div className="space-y-8">
@@ -58,6 +65,40 @@ export default async function DashboardPage({
                 </Link>
               </CardDescription>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {subscription && (subscription.trialExpired || (subscription.inTrial && subscription.daysLeft <= 3)) && (
+        <Card
+          className={
+            subscription.trialExpired
+              ? 'border-destructive/40 bg-destructive/5'
+              : 'border-warning/40 bg-warning/5'
+          }
+        >
+          <CardContent className="flex items-start gap-3 pt-6">
+            {subscription.trialExpired ? (
+              <AlertTriangle className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden />
+            ) : (
+              <Hourglass className="mt-0.5 size-5 shrink-0 text-warning" aria-hidden />
+            )}
+            <div className="flex-1">
+              <CardTitle className="text-sm">
+                {subscription.trialExpired
+                  ? t('trialOverTitle')
+                  : t('trialEndsTitle', { days: subscription.daysLeft })}
+              </CardTitle>
+              <CardDescription className="mt-1">
+                {subscription.trialExpired ? t('trialOverBody') : t('trialEndsBody')}
+              </CardDescription>
+            </div>
+            <Button variant={subscription.trialExpired ? 'default' : 'outline'} size="sm" asChild>
+              <Link href="/settings/plan">
+                <CreditCard className="size-4" aria-hidden />
+                {t('goPlan')}
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       )}
@@ -125,9 +166,9 @@ export default async function DashboardPage({
                 <Link href="/demo/outbox">{t('outbox')}</Link>
               </Button>
               <Button variant="ghost" asChild>
-                <Link href="/settings">
-                  <Settings className="size-4" aria-hidden />
-                  {tNav('settings')}
+                <Link href="/settings/plan">
+                  <CreditCard className="size-4" aria-hidden />
+                  {tNav('plan')}
                 </Link>
               </Button>
             </CardContent>

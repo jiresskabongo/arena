@@ -6,6 +6,7 @@ import { createEmailToken } from '@/server/auth/tokens';
 import { destroyAllSessionsForUser } from '@/server/auth/session';
 import { logActivity } from './activity';
 import { emailProvider, getTemplate, renderTemplate } from '@/server/providers/email';
+import { startTrial } from '@/server/services/subscription';
 import type { LoginInput, RegisterInput, ChangePasswordInput } from '@/lib/schemas/auth';
 import type { User } from '@prisma/client';
 
@@ -85,6 +86,7 @@ export async function register(
       });
       await tx.userActiveOrg.create({ data: { userId: u.id, organizationId: org.id } });
       await tx.onboardingState.create({ data: { userId: u.id, organizationId: org.id } });
+      await startTrial(org.id, tx); // essai gratuit du plan par défaut (CDC §59)
       await tx.activityLog.create({
         data: {
           userId: u.id,
