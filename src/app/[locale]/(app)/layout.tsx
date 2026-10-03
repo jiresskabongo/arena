@@ -5,6 +5,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/server/auth/session';
 import { UserMenu } from '@/components/app/user-menu';
+import { AppNav } from '@/components/app/app-nav';
+import { can, isOrgRole } from '@/server/services/permissions';
 import { Sparkles } from 'lucide-react';
 
 export const metadata: Metadata = { title: 'Espace client' };
@@ -28,6 +30,13 @@ export default async function AppLayout({
   const auth = await getAuth();
   if (!auth) redirect('/login');
 
+  // Rôle dans l'organisation active (visibilité de la nav « Équipe »)
+  const membership = await prisma.organizationMember.findUnique({
+    where: { userId: auth.user.id },
+  });
+  const canSeeTeam =
+    !auth.user.isSuperAdmin && membership !== null && isOrgRole(membership.role) && can(membership.role, 'members:read');
+
   return (
     <div className="flex flex-1 flex-col">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
@@ -41,6 +50,9 @@ export default async function AppLayout({
               {t('tagline')}
             </span>
           </Link>
+          <div className="flex items-center gap-3">
+            <AppNav canSeeTeam={canSeeTeam} />
+          </div>
           <UserMenu
             firstName={auth.user.firstName}
             email={auth.user.email}

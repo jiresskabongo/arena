@@ -47,7 +47,7 @@ const publicUser = (u: User) => ({
 export async function register(
   input: RegisterInput,
   ip: string | null,
-): Promise<Result<{ userId: string; organizationId: string }>> {
+): Promise<Result<{ userId: string; organizationId: string; joinedInvite?: boolean }>> {
   const existing = await prisma.user.findUnique({ where: { email: input.email } });
   if (existing) {
     return { ok: false, error: bad('email_taken', 'Un compte existe déjà avec cet e-mail.') };
@@ -56,6 +56,78 @@ export async function register(
   const passwordHash = await hashPassword(input.password);
   const locale = input.locale ?? 'fr';
   const currency = input.currency ?? 'USD';
+
+  // Invitation en attente pour cet e-mail → rejoint l'organisation invitante
+  // (le schéma limite à une organisation par compte : pas de 2e org créée).
+  const pendingInvite = await prisma.organizationMember.findFirst({
+    where: { invitedEmail: input.email, status: 'invited', userId: null },
+  });
+  if (pendingInvite) {
+    try {
+      const { user } = await prisma.$transaction(async (tx) => {
+        const u = await tx.user.create({
+          data: {
+            email: input.email,
+            passwordHash,
+            firstName: input.firstName,
+            lastName: input.lastName,
+            locale,
+            currency,
+          },
+        });
+        await tx.organizationMember.update({
+          where: { id: pendingInvite.id },
+          data: { userId: u.id, status: 'active', invitedEmail: null },
+        });
+        await tx.userActiveOrg.create({
+          data: { userId: u.id, organizationId: pendingInvite.organizationId },
+        });
+        await tx.onboardingState.create({
+          data: { userId: u.id, organizationId: pendingInvite.organizationId },
+        });
+        await tx.activityLog.create({
+          data: {
+            userId: u.id,
+            organizationId: pendingInvite.organizationId,
+            action: 'invite.accept',
+            entity: 'user',
+            entityId: u.id,
+            ip,
+          },
+        });
+        return { user: u };
+      });
+
+      const org = await prisma.organization.findUnique({
+        where: { id: pendingInvite.organizationId },
+      });
+      const appUrl = process.env.APP_URL ?? 'http://localhost:3000';
+      const { token } = await createEmailToken(user.id, 'verify_email');
+      const tpl = await getTemplate('welcome', 'email', org?.id, locale as 'fr' | 'en');
+      await emailProvider.send({
+        to: input.email,
+        organizationId: org?.id,
+        templateKey: 'welcome',
+        subject: tpl?.subject || 'Bienvenue sur EventFlow',
+        text: `${renderTemplate(tpl?.body ?? 'Bienvenue !', {
+          guest_name: input.firstName,
+          invitation_url: `${appUrl}/${locale === 'en' ? 'en/' : ''}verify-email?token=${token}`,
+        })}\n\n— Lien de vérification : ${appUrl}/${locale === 'en' ? 'en/' : ''}verify-email?token=${token}`,
+      });
+
+      return {
+        ok: true,
+        data: {
+          userId: user.id,
+          organizationId: pendingInvite.organizationId,
+          joinedInvite: true,
+        },
+      };
+    } catch (e) {
+      console.error('[register] erreur (invitation)', e);
+      return { ok: false, error: bad('internal', 'Inscription impossible. Veuillez réessayer.') };
+    }
+  }
 
   const orgSlugBase = slugify(input.organizationName) || 'org';
 

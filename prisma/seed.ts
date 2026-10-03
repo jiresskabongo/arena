@@ -417,6 +417,12 @@ const notificationTemplates = [
     bodyFr: `Bonjour {guest_name},\n\nNous avons reçu une demande de réinitialisation de votre mot de passe. Cliquez sur le lien ci-dessous (valable 1 heure) :\n\n{invitation_url}\n\nSi vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.`,
     bodyEn: `Hi {guest_name},\n\nWe received a password reset request. Click the link below (valid for 1 hour):\n\n{invitation_url}\n\nIf you did not request this, please ignore this email.`,
   },
+  {
+    key: 'invite_member', channel: 'email',
+    subjectFr: '{inviter_name} vous invite sur EventFlow', subjectEn: '{inviter_name} invites you to EventFlow',
+    bodyFr: `Bonjour,\n\n{inviter_name} vous a invité à rejoindre « {organization_name} » sur EventFlow en tant que {role_label}.\n\nPour accepter, créez votre compte avec cette adresse e-mail :\n\n{invitation_url}`,
+    bodyEn: `Hi,\n\n{inviter_name} invited you to join "{organization_name}" on EventFlow as {role_label}.\n\nTo accept, create your account with this email address:\n\n{invitation_url}`,
+  },
 ];
 
 const featureFlags = [

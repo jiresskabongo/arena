@@ -18,7 +18,8 @@ paiement, IA (crédits), communications (e-mail / SMS / WhatsApp), super admin.
 | Phase 1 — Base de données (38 modèles, migration `init`, seeders) | ✅ |
 | Phase 2 — Authentification (register/login/logout, Argon2id, sessions par appareil, vérif. e-mail, reset, rate limiting) | ✅ |
 | Phase 3 — Multi-tenancy & SaaS (contexte tenant, matrice 5 rôles, essai gratuit, quotas réels, page Plan & quotas) | ✅ |
-| Phases 4 → 15 | ⏳ |
+| Phase 4 — Dashboard & onboarding (KPIs réels, assistant 7 étapes, création événement minimale, équipe & invitations) | ✅ |
+| Phases 5 → 15 | ⏳ |
 
 ## Documentation
 
