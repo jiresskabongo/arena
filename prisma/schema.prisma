@@ -778,7 +778,7 @@ model NotificationCampaign {
 
 model MessageLog {
   id           String   @id @default(cuid())
-  organizationId String
+  organizationId String?
   campaignId   String?
   guestId      String?
   channel      String
@@ -793,7 +793,7 @@ model MessageLog {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization Organization?       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   campaign     NotificationCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
   guest        Guest?              @relation(fields: [guestId], references: [id], onDelete: SetNull)
 

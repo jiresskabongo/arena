@@ -16,7 +16,7 @@ paiement, IA (crédits), communications (e-mail / SMS / WhatsApp), super admin.
 | Architecture technique & plan d'implémentation | ✅ [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
 | Phase 0 — Scaffolding (Next.js 15, TS, Tailwind v4, i18n FR/EN, design system, landing) | ✅ |
 | Phase 1 — Base de données (38 modèles, migration `init`, seeders) | ✅ |
-| Phase 2 — Authentification | ⏳ en cours |
+| Phase 2 — Authentification (register/login/logout, Argon2id, sessions par appareil, vérif. e-mail, reset, rate limiting) | ✅ |
 | Phases 3 → 15 | ⏳ |
 
 ## Documentation

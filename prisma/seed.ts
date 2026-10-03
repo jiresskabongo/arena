@@ -405,6 +405,18 @@ const notificationTemplates = [
     bodyFr: `Bonjour,\n\nVous avez atteint 80 % de votre quota (invités, stockage ou crédits). Pensez à passer à l’étape supérieure.\n\nGérer mon abonnement : {invitation_url}`,
     bodyEn: `Hi,\n\nYou have reached 80% of your quota (guests, storage or credits). Consider upgrading.\n\nManage my subscription: {invitation_url}`,
   },
+  {
+    key: 'verify_email', channel: 'email',
+    subjectFr: 'Vérifiez votre adresse e-mail — EventFlow', subjectEn: 'Verify your email — EventFlow',
+    bodyFr: `Bonjour {guest_name},\n\nMerci de vérifier votre adresse e-mail pour finaliser votre inscription EventFlow :\n\n{invitation_url}`,
+    bodyEn: `Hi {guest_name},\n\nPlease verify your email address to finish your EventFlow signup:\n\n{invitation_url}`,
+  },
+  {
+    key: 'reset_password', channel: 'email',
+    subjectFr: 'Réinitialisation de votre mot de passe — EventFlow', subjectEn: 'Reset your password — EventFlow',
+    bodyFr: `Bonjour {guest_name},\n\nNous avons reçu une demande de réinitialisation de votre mot de passe. Cliquez sur le lien ci-dessous (valable 1 heure) :\n\n{invitation_url}\n\nSi vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.`,
+    bodyEn: `Hi {guest_name},\n\nWe received a password reset request. Click the link below (valid for 1 hour):\n\n{invitation_url}\n\nIf you did not request this, please ignore this email.`,
+  },
 ];
 
 const featureFlags = [

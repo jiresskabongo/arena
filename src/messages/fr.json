@@ -26,6 +26,117 @@
     "settings": "Paramètres",
     "logout": "Se déconnecter"
   },
+  "auth": {
+    "login": {
+      "title": "Bon retour parmi nous",
+      "subtitle": "Connectez-vous à votre espace EventFlow.",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "forgot": "Mot de passe oublié ?",
+      "submit": "Se connecter",
+      "welcomeBack": "Content de vous revoir !",
+      "noAccount": "Pas encore de compte ?",
+      "demoHint": "Démo : le super admin admin@eventflow.app / EventFlow#2026! (dev uniquement)"
+    },
+    "register": {
+      "title": "Créez votre compte",
+      "subtitle": "7 jours d'essai gratuit, sans carte bancaire.",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Adresse e-mail",
+      "organization": "Nom de votre organisation",
+      "organizationPlaceholder": "Ex. Agence Lumière, Famille Nkolo…",
+      "password": "Mot de passe",
+      "passwordHint": "8 caractères min., lettres et chiffres.",
+      "confirm": "Confirmer le mot de passe",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "submit": "Créer mon compte",
+      "success": "Compte créé avec succès. Bienvenue !",
+      "checkEmail": "Vérifiez votre boîte mail (démo : outbox ci-dessous).",
+      "hasAccount": "Déjà un compte ?"
+    },
+    "forgot": {
+      "title": "Mot de passe oublié",
+      "subtitle": "Indiquez votre e-mail et nous vous enverrons un lien de réinitialisation.",
+      "email": "Adresse e-mail",
+      "submit": "Envoyer le lien",
+      "sent": "Si un compte existe pour cette adresse, un e-mail de réinitialisation vient d'être envoyé.",
+      "demoHint": "Démo : retrouvez le lien dans la boîte d'envoi (badge « Mode démo »).",
+      "back": "Retour à la connexion"
+    },
+    "reset": {
+      "title": "Nouveau mot de passe",
+      "subtitle": "Choisissez un nouveau mot de passe pour votre compte.",
+      "newPassword": "Nouveau mot de passe",
+      "hint": "8 caractères min., lettres et chiffres.",
+      "confirm": "Confirmer",
+      "mismatch": "Les mots de passe ne correspondent pas.",
+      "submit": "Mettre à jour",
+      "success": "Mot de passe mis à jour. Vous pouvez vous connecter.",
+      "invalid": "Ce lien est invalide ou a expiré.",
+      "newLink": "Demander un nouveau lien",
+      "error": "Opération impossible. Réessayez."
+    },
+    "verify": {
+      "checking": "Vérification en cours…",
+      "success": "Adresse e-mail vérifiée !",
+      "expired": "Lien expiré",
+      "invalid": "Lien invalide",
+      "goDashboard": "Aller au tableau de bord",
+      "newLink": "Demander un nouveau lien",
+      "backLogin": "Retour à la connexion"
+    }
+  },
+  "app": {
+    "superAdmin": "Super admin",
+    "loggedOut": "Vous êtes déconnecté(e).",
+    "sessions": {
+      "title": "Sessions & appareils",
+      "subtitle": "Gérez les connexions actives sur votre compte et révoquez les appareils non reconnus.",
+      "activeTitle": "Sessions actives",
+      "activeBody": "Chaque connexion crée une session révoquable. Après un changement de mot de passe, toutes les sessions sont révoquées.",
+      "device": "Appareil",
+      "ip": "Adresse IP",
+      "lastSeen": "Dernière activité",
+      "expires": "Expire le",
+      "current": "Cette session",
+      "revoke": "Révoquer",
+      "revoked": "Session révoquée.",
+      "revokeError": "Impossible de révoquer la session.",
+      "loggedOut": "Vous avez été déconnecté(e).",
+      "active": "Active",
+      "empty": "Aucune session active.",
+      "loadError": "Impossible de charger les sessions. Réessayez."
+    }
+  },
+  "dashboard": {
+    "hello": "Bonjour {name} 👋",
+    "orgSubtitle": "Espace : {org}",
+    "adminSubtitle": "Compte administrateur de la plateforme.",
+    "verifyTitle": "Vérifiez votre adresse e-mail",
+    "verifyBody": "Un e-mail de vérification vous a été envoyé (mode démo). ",
+    "verifyOutbox": "Ouvrir la boîte d'envoi (démo)",
+    "adminCardTitle": "Super admin",
+    "adminCardBody": "L'espace d'administration de la plateforme (utilisateurs, plans, templates, analytics) arrive en fin de construction.",
+    "statEvents": "Événements",
+    "statGuests": "Invités",
+    "statSubscription": "Abonnement",
+    "statSoon": "Disponible à la prochaine phase",
+    "statSoonShort": "Bientôt",
+    "nextTitle": "En attendant…",
+    "nextBody": "Gérez vos connexions ou consultez la boîte d'envoi démo. Les modules événements, studio et invités arrivent en phase 4-6.",
+    "sessions": "Mes sessions",
+    "outbox": "Boîte d'envoi (démo)"
+  },
+  "outbox": {
+    "title": "Boîte d'envoi",
+    "subtitle": "E-mails générés par le fournisseur mock. En production, ces messages partiraient via SMTP/Resend.",
+    "demoBadge": "Mode démo",
+    "to": "À",
+    "open": "Ouvrir le lien",
+    "empty": "Aucun e-mail généré pour le moment.",
+    "back": "Retour à l'accueil"
+  },
   "landing": {
     "heroBadge": "Plateforme tout-en-un pour vos événements",
     "heroTitle": "Créez des invitations élégantes, de A à Z.",
