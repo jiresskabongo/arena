@@ -1,0 +1,48 @@
+{
+  "common": {
+    "appName": "EventFlow",
+    "tagline": "Invitations & événements",
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "next": "Suivant",
+    "search": "Rechercher",
+    "close": "Fermer",
+    "signIn": "Se connecter",
+    "signUp": "Créer un compte",
+    "demoBadge": "Mode démo"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "events": "Événements",
+    "studio": "Studio",
+    "scanner": "Contrôle d'accès",
+    "subscription": "Abonnement",
+    "settings": "Paramètres",
+    "logout": "Se déconnecter"
+  },
+  "landing": {
+    "heroBadge": "Plateforme tout-en-un pour vos événements",
+    "heroTitle": "Créez des invitations élégantes, de A à Z.",
+    "heroSubtitle": "Save the Date, invitations, QR code unique par invité, RSVP et contrôle des entrées : gérez votre événement de bout en bout depuis une seule plateforme.",
+    "ctaPrimary": "Créer mon premier événement",
+    "ctaSecondary": "Découvrir la plateforme",
+    "feature1Title": "Studio de création",
+    "feature1Body": "Save the Date, invitations, affiches, badges et cartes d'accès — personnalisez chaque support dans un éditeur visuel moderne.",
+    "feature2Title": "QR unique par invité",
+    "feature2Body": "Chaque invité reçoit sa propre invitation et son QR code. Le jour J, vos agents scannent et contrôlent les entrées, même hors ligne.",
+    "feature3Title": "RSVP & statistiques",
+    "feature3Body": "Collectez les confirmations, envoyez des rappels automatiques et suivez les présences en temps réel, du premier invité au rapport final.",
+    "howTitle": "Comment ça marche ?",
+    "howStep1": "Créez votre compte et votre espace",
+    "howStep2": "Composez vos supports dans le studio",
+    "howStep3": "Importez vos invités et envoyez",
+    "howStep4": "Contrôlez les entrées le jour J",
+    "footerNote": "Conçu pour les beaux jours. Multi-tenant, multi-devises, FR/EN."
+  }
+}

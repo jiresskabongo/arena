@@ -1,0 +1,48 @@
+{
+  "common": {
+    "appName": "EventFlow",
+    "tagline": "Invitations & events",
+    "loading": "Loading…",
+    "error": "Something went wrong. Please try again.",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "close": "Close",
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "demoBadge": "Demo mode"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "events": "Events",
+    "studio": "Studio",
+    "scanner": "Access control",
+    "subscription": "Subscription",
+    "settings": "Settings",
+    "logout": "Sign out"
+  },
+  "landing": {
+    "heroBadge": "All-in-one platform for your events",
+    "heroTitle": "Create elegant invitations, from A to Z.",
+    "heroSubtitle": "Save the Date, invitations, unique QR code per guest, RSVP and entry control: manage your event end to end from a single platform.",
+    "ctaPrimary": "Create my first event",
+    "ctaSecondary": "Explore the platform",
+    "feature1Title": "Creation studio",
+    "feature1Body": "Save the Date, invitations, posters, badges and access cards — customize every piece in a modern visual editor.",
+    "feature2Title": "Unique QR per guest",
+    "feature2Body": "Each guest gets their own invitation and QR code. On the day, your agents scan and control entries, even offline.",
+    "feature3Title": "RSVP & statistics",
+    "feature3Body": "Collect confirmations, send automated reminders and track attendance in real time, from the first guest to the final report.",
+    "howTitle": "How it works?",
+    "howStep1": "Create your account and workspace",
+    "howStep2": "Design your pieces in the studio",
+    "howStep3": "Import guests and send",
+    "howStep4": "Control entries on the day",
+    "footerNote": "Built for beautiful days. Multi-tenant, multi-currency, FR/EN."
+  }
+}

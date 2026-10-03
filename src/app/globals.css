@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #faf9f7;
+  --foreground: #171310;
+  --surface: #ffffff;
+  --surface-2: #f4f2ed;
+  --muted: #6d675e;
+  --muted-foreground: #6d675e;
+  --border: #e7e3da;
+  --input: #e7e3da;
+  --ring: #b08d3e;
+  --primary: #a8853a;
+  --primary-foreground: #fffdf8;
+  --secondary: #4f46e5;
+  --secondary-foreground: #ffffff;
+  --accent: #f3ead7;
+  --accent-foreground: #3d3423;
+  --success: #1a7f4b;
+  --warning: #b45309;
+  --danger: #c2382f;
+  --danger-foreground: #ffffff;
+}
+
+.dark {
+  --background: #0c0b09;
+  --foreground: #f2efe9;
+  --surface: #161410;
+  --surface-2: #1e1b16;
+  --muted: #9b948a;
+  --muted-foreground: #9b948a;
+  --border: #2b2721;
+  --input: #2b2721;
+  --ring: #d4af5e;
+  --primary: #d4af5e;
+  --primary-foreground: #211a09;
+  --secondary: #818cf8;
+  --secondary-foreground: #0e0d1f;
+  --accent: #2a2415;
+  --accent-foreground: #e8dcc0;
+  --success: #34d17b;
+  --warning: #f5a524;
+  --danger: #f26b61;
+  --danger-foreground: #2a0c0a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+}

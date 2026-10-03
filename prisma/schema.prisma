@@ -1,0 +1,905 @@
+// EventFlow SaaS — Schéma de données (CDC §58 + entités ajoutées justifiées)
+// SQLite (sandbox) — portable PostgreSQL : remplacer provider, mêmes modèles.
+// Conventions : ids cuid, montants en unités mineures Int, JSON via Json,
+// timestamps auto. Toutes les tables métier portent organizationId.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════ Identité & accès ═══════════════════════════
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  passwordHash      String
+  phone             String?
+  firstName         String
+  lastName          String
+  avatarMediaId     String?
+  locale            String    @default("fr")
+  currency          String    @default("USD")
+  timezone          String    @default("Africa/Kinshasa")
+  isSuperAdmin      Boolean   @default(false)
+  emailVerifiedAt   DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  sessions                  Session[]
+  otpCodes                  OtpCode[]
+  emailVerificationTokens   EmailVerificationToken[]
+  passwordResetTokens       PasswordResetToken[]
+  memberships               OrganizationMember[]
+  activeOrg                 UserActiveOrg?
+  scannerAgents             ScannerAgent[]
+  designs                   Design[]
+  mediaFiles                MediaFile[]
+  aiUsages                  AiUsage[]
+  activityLogs              ActivityLog[]
+  campaigns                 NotificationCampaign[]
+  importJobs                ImportJob[]
+  notifications             Notification[]
+}
+
+model Session {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  userAgent String?
+  ip        String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  lastSeenAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model OtpCode {
+  id        String    @id @default(cuid())
+  userId    String
+  phone     String
+  purpose   String // login | phone_verify
+  codeHash  String
+  attempts  Int       @default(0)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([phone, purpose])
+}
+
+model Role {
+  code           String @id // owner | manager | designer | scanner | viewer
+  labelFr        String
+  labelEn        String
+  permissionsJson String // liste de permissions (lisible UI ; autorité = matrice serveur)
+
+  @@map("roles")
+}
+
+// ═══════════════════════════ Organisation & abonnement ═══════════════════════════
+
+model Organization {
+  id         String    @id @default(cuid())
+  name       String
+  slug       String    @unique
+  logoMediaId String?
+  address    String?
+  phone      String?
+  email      String?
+  currency   String    @default("USD")
+  locale     String    @default("fr")
+  timezone   String    @default("Africa/Kinshasa")
+  isActive   Boolean   @default(true)
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  members           OrganizationMember[]
+  activeOrgRefs     UserActiveOrg[]
+  subscription      Subscription?
+  events            Event[]
+  designs           Design[]
+  designTemplates   DesignTemplate[]
+  designAssets      DesignAsset[]
+  mediaFiles        MediaFile[]
+  usageCounters     UsageCounter[]
+  subscriptionsHist SubscriptionsHistory[]
+  payments          Payment[]
+  invoices          Invoice[]
+  aiUsages          AiUsage[]
+  automations       Automation[]
+  activityLogs      ActivityLog[]
+  notifications     Notification[]
+  campaigns         NotificationCampaign[]
+  messageLogs       MessageLog[]
+  importJobs        ImportJob[]
+  tables            Table[]
+  guestBooks        GuestBookMessage[]
+  invitations       Invitation[]
+  invitationTokens  InvitationToken[]
+  qrCodes           QRCode[]
+  checkIns          CheckIn[]
+  scannerAgents     ScannerAgent[]
+  rsvps             Rsvp[]
+  onboardingStates  OnboardingState[]
+
+  @@index([isActive])
+}
+
+model OrganizationMember {
+  id           String   @id @default(cuid())
+  organizationId String
+  userId       String?  @unique
+  invitedEmail String?
+  role         String   @default("viewer") // owner | manager | designer | scanner | viewer
+  status       String   @default("invited") // invited | active | removed
+  invitedBy    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, status])
+  @@index([invitedEmail])
+}
+
+model UserActiveOrg {
+  userId         String @unique
+  organizationId String
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Plan {
+  id          String   @id @default(cuid())
+  code        String   @unique // starter | pro | business | …
+  name        String
+  description String
+  trialDays   Int      @default(7)
+  limitsJson  Json     // { events, guestsPerEvent, storageMb, smsPerMonth, emailsPerMonth, aiCreditsPerMonth, collaborators, … }
+  featuresJson Json    // { premiumTemplates, communications, advancedStats, team, whiteLabel, … }
+  isActive    Boolean  @default(true)
+  isArchived  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  prices       PlanPrice[]
+  subscriptions SubscriptionsHistory[]
+}
+
+model PlanPrice {
+  id        String @id @default(cuid())
+  planId    String
+  currency  String // USD | CDF | EUR
+  amountMinor Int
+  interval  String @default("monthly") // monthly | yearly
+  isActive  Boolean @default(true)
+
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, currency, interval])
+}
+
+model Subscription {
+  id           String    @id @default(cuid())
+  organizationId String  @unique
+  planId       String
+  status       String    @default("trialing") // trialing | active | past_due | canceled | expired | paused
+  trialEndsAt  DateTime?
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean   @default(false)
+  provider         String    @default("mock")
+  providerCustomerId String?
+  providerSubscriptionId String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payments     Payment[]
+  invoices     Invoice[]
+
+  @@index([status])
+}
+
+model SubscriptionsHistory {
+  id        String   @id @default(cuid())
+  organizationId String
+  planId    String
+  status    String
+  reason    String?
+  at        DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  plan         Plan         @relation(fields: [planId], references: [id], onDelete: Restrict)
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  organizationId String
+  subscriptionId String?
+  provider  String
+  providerPaymentId String?
+  amountMinor Int
+  currency  String
+  status    String   @default("pending") // pending | succeeded | failed | refunded
+  description String?
+  rawJson   Json?
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+  @@index([providerPaymentId])
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  organizationId String
+  subscriptionId String?
+  number    String
+  amountMinor Int
+  currency  String
+  status    String   @default("open") // open | paid | void
+  issuedAt  DateTime @default(now())
+  dueAt     DateTime
+  pdfUrl    String?
+  providerInvoiceId String?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status])
+}
+
+model WebhookEvent {
+  id              String   @id @default(cuid())
+  provider        String
+  providerEventId String
+  type            String
+  payloadJson     Json
+  processedAt     DateTime?
+  error           String?
+  createdAt       DateTime @default(now())
+
+  @@unique([provider, providerEventId])
+  @@index([provider, processedAt])
+}
+
+// ═══════════════════════════ Événement ═══════════════════════════
+
+model EventType {
+  code      String @id // wedding | birthday | …
+  labelFr   String
+  labelEn   String
+  category  String @default("personnel") // personnel | corporate
+
+  events Event[]
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  organizationId String
+  name      String
+  typeCode  String
+  slug      String   @unique
+  date      DateTime
+  startTime String // "HH:mm" — affichage local
+  endTime   String?
+  timezone  String   @default("Africa/Kinshasa")
+  venue     String
+  address   String?
+  city      String?
+  country   String?
+  description String?
+  contactPhone String?
+  contactEmail String?
+  website   String?
+  dressCode String?
+  practicalInfo String?
+  coverMediaId String?
+  logoMediaId String?
+  status    String   @default("draft") // draft | published | archived
+  optionsJson Json   // { qr, rsvp, sms, email, whatsapp, guestbook, preferences, tables, gallery, countdown }
+  allowMultipleEntries Boolean @default(false)
+  welcomeMessage String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  type           EventType     @relation(fields: [typeCode], references: [code], onDelete: Restrict)
+  members        EventMember[]
+  guests         Guest[]
+  tables         Table[]
+  invitations    Invitation[]
+  scannerAgents  ScannerAgent[]
+  checkIns       CheckIn[]
+  rsvps          Rsvp[]
+  rsvpQuestions  RsvpQuestion[]
+  guestBookMessages GuestBookMessage[]
+  designs        Design[]
+  mediaFiles     MediaFile[]
+  campaigns      NotificationCampaign[]
+  automations    Automation[]
+  importJobs     ImportJob[]
+
+  @@index([organizationId, status])
+  @@index([organizationId, date])
+}
+
+model EventMember {
+  id        String  @id @default(cuid())
+  eventId   String
+  roleLabel String // « Mariée », « Conférencier »…
+  firstName String
+  lastName  String
+  mediaId   String?
+  sortOrder Int     @default(0)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+model RsvpQuestion {
+  id         String @id @default(cuid())
+  eventId    String
+  label      String
+  type       String @default("text") // text | number | choice
+  choicesJson Json?
+  required   Boolean  @default(false)
+  sortOrder  Int      @default(0)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+// ═══════════════════════════ Invités, tables, RSVP ═══════════════════════════
+
+model Guest {
+  id        String   @id @default(cuid())
+  eventId   String
+  organizationId String
+  firstName String
+  lastName  String
+  phone     String?
+  email     String?
+  category  String   @default("autres") // famille | amis | vip | collegues | autres
+  tableId   String?
+  companions Int     @default(0)
+  internalNotes String?
+  inviteStatus  String @default("none") // none | created | sent | failed
+  rsvpStatus    String @default("pending") // pending | confirmed | declined | maybe
+  presenceStatus String @default("pending") // pending | present | absent
+  checkedInAt   DateTime?
+  source      String   @default("manual") // manual | import
+  importJobId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  event        Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  table        Table?           @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  importJob    ImportJob?       @relation(fields: [importJobId], references: [id], onDelete: SetNull)
+  invitation   Invitation?
+  preference   GuestPreference?
+  checkIns     CheckIn[]
+  messageLogs  MessageLog[]
+  rsvp         Rsvp?
+
+  @@unique([eventId, phone])
+  @@unique([eventId, email])
+  @@index([eventId, rsvpStatus])
+  @@index([eventId, category])
+  @@index([organizationId])
+}
+
+model Table {
+  id           String  @id @default(cuid())
+  eventId      String
+  organizationId String
+  name         String
+  capacity     Int     @default(8)
+  sortOrder    Int     @default(0)
+  positionX    Float?
+  positionY    Float?
+
+  event        Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  guests       Guest[]
+
+  @@index([eventId])
+  @@index([organizationId])
+}
+
+model GuestPreference {
+  id                String  @id @default(cuid())
+  guestId           String  @unique
+  meal              String?
+  drink             String?
+  allergies         String?
+  ceremonyAttending Boolean?
+  receptionAttending Boolean?
+
+  guest Guest @relation(fields: [guestId], references: [id], onDelete: Cascade)
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  eventId   String
+  organizationId String
+  guestId   String   @unique
+  designId  String?
+  publicUrl String
+  status    String   @default("draft") // draft | sent | used | expired
+  sentAt    DateTime?
+  lastReminderAt DateTime?
+
+  event        Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  guest        Guest            @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  token        InvitationToken?
+  qrCode       QRCode?
+  rsvp         Rsvp?
+  checkIns     CheckIn[]
+  design       Design?        @relation(fields: [designId], references: [id], onDelete: SetNull)
+
+  @@index([eventId, status])
+  @@index([organizationId])
+}
+
+model InvitationToken {
+  id           String    @id @default(cuid())
+  invitationId String    @unique
+  organizationId String
+  token        String    @unique // opaque, 32B base62, sans PII
+  expiresAt    DateTime?
+  revokedAt    DateTime?
+
+  invitation   Invitation  @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+}
+
+model QRCode {
+  id           String   @id @default(cuid())
+  invitationId String   @unique
+  organizationId String
+  data         String // URL publique /i/{token}
+  format       String   @default("png")
+  size         Int      @default(512)
+  mediaId      String?
+  generatedAt  DateTime @default(now())
+
+  invitation   Invitation  @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+}
+
+model Rsvp {
+  id             String   @id @default(cuid())
+  invitationId   String   @unique
+  guestId        String   @unique
+  organizationId String
+  eventId        String
+  status         String   @default("pending") // confirmed | declined | maybe
+  companions     Int      @default(0)
+  answersJson    Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  guest        Guest      @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  event        Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, status])
+  @@index([organizationId])
+}
+
+model CheckIn {
+  id             String   @id @default(cuid())
+  eventId        String
+  organizationId String
+  invitationId   String
+  guestId        String   @unique
+  scannerAgentId String?
+  entryPoint     String?
+  deviceId       String?
+  result         String // valid | already_used | invalid | expired
+  clientUuid     String   @unique // idempotence offline
+  synced         Boolean  @default(true)
+  checkedInAt    DateTime @default(now())
+
+  event        Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitation   Invitation   @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  guest        Guest        @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  scannerAgent ScannerAgent? @relation(fields: [scannerAgentId], references: [id], onDelete: SetNull)
+
+  @@index([eventId, checkedInAt])
+  @@index([invitationId, checkedInAt])
+  @@index([organizationId])
+}
+
+model ScannerAgent {
+  id             String   @id @default(cuid())
+  eventId        String
+  organizationId String
+  userId         String?
+  name           String
+  entryPoint     String   @default("entrance") // entrance | vip | staff | family | custom
+  permissionsJson String  @default("{}") // { canViewPhoto, canSearch, canSeeHistory }
+  active         Boolean  @default(true)
+  token          String   @unique
+  createdAt      DateTime @default(now())
+
+  event        Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  checkIns     CheckIn[]
+
+  @@index([eventId, active])
+  @@index([organizationId])
+}
+
+model GuestBookMessage {
+  id             String   @id @default(cuid())
+  eventId        String
+  organizationId String
+  authorName     String
+  authorEmail    String?
+  message        String
+  status         String   @default("pending") // pending | approved | hidden | rejected
+  publishedAt    DateTime?
+  createdAt      DateTime @default(now())
+
+  event        Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, status])
+  @@index([organizationId])
+}
+
+// ═══════════════════════════ Design & studio ═══════════════════════════
+
+model Design {
+  id             String   @id @default(cuid())
+  organizationId String
+  eventId        String?
+  type           String   @default("invitation") // save_the_date | invitation | vip_invitation | access_card | poster | badge | program | thank_you_card | facebook_post | instagram_post | story | whatsapp_visual | custom
+  templateId     String?
+  name           String
+  format         String   @default("portrait") // portrait | landscape | square | print | social
+  width          Int      @default(1080)
+  height         Int      @default(1350)
+  backgroundJson Json     // { type: color|image|pattern, value }
+  elementsJson   Json     // modèle structuré du canvas (voir docs)
+  coverMediaId   String?
+  status         String   @default("draft") // draft | published
+  isAiGenerated  Boolean  @default(false)
+  version        Int      @default(1)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  event        Event?       @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  createdBy    User?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  template     DesignTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  invitations  Invitation[]
+
+  createdById  String?
+  @@index([organizationId, type])
+  @@index([eventId])
+}
+
+model DesignTemplate {
+  id             String   @id @default(cuid())
+  organizationId String? // null = plateforme
+  name           String
+  category       String   @default("mariage") // mariage | anniversaire | soutenance | conference | baptême | gala | entreprise | vip | save_the_date
+  style          String   @default("moderne") // romantique | luxe | moderne | minimaliste | classique | floral | africain contemporain | professionnel
+  format         String   @default("portrait")
+  width          Int      @default(1080)
+  height         Int      @default(1350)
+  thumbnailMediaId String?
+  contentJson    Json     // { background, elements }
+  isPremium      Boolean  @default(false)
+  requiredPlan   String? // null = tous plans
+  isFeatured     Boolean  @default(false)
+  status         String   @default("published") // draft | published | archived
+  publishedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  designs      Design[]
+
+  @@index([status, category])
+  @@index([organizationId])
+}
+
+model DesignAsset {
+  id        String  @id @default(cuid())
+  organizationId String
+  designId  String?
+  kind      String  @default("icon") // shape | icon | ornament | logo
+  mediaId   String?
+  dataJson  Json?
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model MediaFile {
+  id           String   @id @default(cuid())
+  organizationId String? // null = plateforme (templates seed)
+  uploadedBy   String?
+  eventId      String?
+  kind         String   @default("photo") // photo | logo | cover | thumbnail | qr | export | template_thumb
+  storageKey   String   @unique
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+  width        Int?
+  height       Int?
+  deletedAt    DateTime?
+  createdAt    DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  uploader     User?         @relation(fields: [uploadedBy], references: [id], onDelete: SetNull)
+  event        Event?        @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, kind])
+  @@index([eventId])
+}
+
+// ═══════════════════════════ IA ═══════════════════════════
+
+model AiUsage {
+  id              String   @id @default(cuid())
+  organizationId  String
+  userId          String?
+  operation       String // design | text | image_enhance | background_remove | variants | sttd | poster
+  creditsCost     Int
+  creditsRefunded Int      @default(0)
+  status          String   @default("success") // success | failed
+  inputSummary    String?
+  outputDesignId  String?
+  createdAt       DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+}
+
+// ═══════════════════════════ Communication ═══════════════════════════
+
+model Notification {
+  id        String   @id @default(cuid())
+  organizationId String?
+  userId    String?
+  type      String
+  channel   String   @default("in_app") // in_app | email | sms | push
+  title     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([organizationId])
+}
+
+model NotificationTemplate {
+  id           String  @id @default(cuid())
+  organizationId String? // null = plateforme
+  key          String // welcome | invitation | confirmation | reminder | change | payment | expiration | quota
+  channel      String // email | sms | whatsapp | push
+  subjectFr    String?
+  subjectEn    String?
+  bodyFr       String
+  bodyEn       String
+  active       Boolean @default(true)
+
+  @@unique([organizationId, key, channel])
+}
+
+model NotificationCampaign {
+  id          String   @id @default(cuid())
+  organizationId String
+  eventId     String
+  type        String // invitation | confirmation | reminder | change | custom
+  channel     String // email | sms | whatsapp
+  templateKey String
+  audienceJson Json   // { scope: all|rsvp_pending|confirmed|declined|ids[] }
+  status      String   @default("draft") // draft | sending | sent | failed
+  scheduledAt DateTime?
+  sentCount   Int      @default(0)
+  failedCount Int      @default(0)
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  event        Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  messageLogs  MessageLog[]
+
+  @@index([organizationId, status])
+  @@index([eventId])
+}
+
+model MessageLog {
+  id           String   @id @default(cuid())
+  organizationId String
+  campaignId   String?
+  guestId      String?
+  channel      String
+  recipient    String
+  templateKey  String?
+  subject      String?
+  body         String
+  status       String   @default("queued") // queued | sent | delivered | failed
+  provider     String   @default("mock")
+  providerMessageId String?
+  error        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  campaign     NotificationCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  guest        Guest?              @relation(fields: [guestId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+  @@index([campaignId])
+  @@index([guestId])
+}
+
+// ═══════════════════════════ Automatisations, journal, quotas, flags ═══════════════════════════
+
+model Automation {
+  id          String   @id @default(cuid())
+  organizationId String
+  eventId     String?
+  name        String
+  trigger     String // rsvp_confirmed | event_48h | event_24h | location_changed | invitation_sent
+  conditionJson Json?
+  actionJson  Json     // { type: "send_campaign", campaignType: "reminder" }
+  active      Boolean  @default(true)
+  lastRunAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  event        Event?       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([active])
+  @@index([eventId])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  organizationId String?
+  userId    String?
+  action    String // login | register | event.create | scan.valid | admin.* …
+  entity    String?
+  entityId  String?
+  metaJson  Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+  @@index([userId, action, createdAt])
+  @@index([action, createdAt])
+}
+
+model UsageCounter {
+  id        String @id @default(cuid())
+  organizationId String
+  key       String // events | guests | storage_mb | sms | emails | ai_credits | collaborators
+  period    String @default("all") // all | YYYY-MM
+  value     Int    @default(0)
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, key, period])
+}
+
+model FeatureFlag {
+  key    String @id
+  valueJson Json
+  scope  String @default("platform") // platform | plan:pro …
+  active Boolean @default(true)
+}
+
+// ═══════════════════════════ Import & onboarding ═══════════════════════════
+
+model ImportJob {
+  id           String   @id @default(cuid())
+  organizationId String
+  eventId      String
+  fileName     String
+  mimeType     String
+  mappingJson  Json?
+  status       String   @default("pending") // pending | validated | confirmed | failed
+  totalRows    Int      @default(0)
+  validRows    Int      @default(0)
+  errorRows    Int      @default(0)
+  duplicateRows Int     @default(0)
+  errorsJson   Json?    // [{ row, field, message }]
+  createdById  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  event        Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  guests       Guest[]
+
+  @@index([organizationId, createdAt])
+  @@index([eventId])
+}
+
+model OnboardingState {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  organizationId String
+  currentStep Int      @default(1) // 1..7
+  skippedStepsJson Json  @default("[]")
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
