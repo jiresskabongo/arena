@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { CalendarDays, Users, CreditCard, LayoutDashboard } from 'lucide-react';
+import { CalendarDays, Users, CreditCard, LayoutDashboard, Palette } from 'lucide-react';
 
 export function AppNav({ canSeeTeam }: { canSeeTeam: boolean }) {
   const t = useTranslations('nav');
@@ -12,6 +12,7 @@ export function AppNav({ canSeeTeam }: { canSeeTeam: boolean }) {
   const links = [
     { href: '/dashboard', label: t('dashboard'), icon: LayoutDashboard, show: true },
     { href: '/events', label: t('events'), icon: CalendarDays, show: true },
+    { href: '/designs', label: t('studio'), icon: Palette, show: true },
     { href: '/settings/team', label: t('team'), icon: Users, show: canSeeTeam },
     { href: '/settings/plan', label: t('plan'), icon: CreditCard, show: true },
   ].filter((l) => l.show);

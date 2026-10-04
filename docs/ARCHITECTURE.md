@@ -947,7 +947,25 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
     quota « toute ou rien ») et l'`ImportJob` journalise fichiers, comptes et erreurs.
     XLSX : 1ʳᵉ feuille, max 5 000 lignes.
 13. **Export invités** : CSV (`;` + BOM UTF-8) avec filtres appliqués ; les exports
-    PDF/XLSX des rapports arrivent en Phase 12.
+   PDF/XLSX des rapports arrivent en Phase 12.
+
+**Ajouts Phase 7 :**
+
+14. **Export PDF** : PDFKit = polices base-14 uniquement → `display`→Times, `sans`→Helvetica
+   (pas d'embedding des polices web) ; retex estimé (largeur moyenne de caractère) ;
+   emoji non supportés en PDF (fallback `•`) ; dégradé rendu haut→bas (approximation de
+   l'angle CSS) ; l'export est journalisé (`MediaFile kind=export`, rétention §33).
+15. **Export PNG** : rendu SVG → libvips (sharp) ; retex textuel approché (métriques de
+   caractères moyennes, pas de mesure de police côté serveur) ; les glyphes emoji ne
+   s'affichent que si une police les fournit dans l'environnement de rendu.
+16. **Save the Date « multiples compositions »** : MVP = 8 styles STTD (minimal, luxe or,
+   floral, gala, contemporain africain, corporate, romantique, story 9:16) + composition de
+   plusieurs designs liés au même événement ; pas de design multi-pages dans ce tronçon.
+17. **Médias publics** : `/api/storage/[key]` est public (les médias partagés via les
+   invitations le sont par nature, CDC liens publics) ; clés non devinables (cuid/hex) ;
+   URLs signées temporisées = prod (P15). Quota `storageMb` appliqué à l'upload
+   (compression ≤ 2048 px qualité 82 + vignette 320 px ; fichiers non-images stockés tels
+   quels ≤ 8 Mo).
 
 ---
 

@@ -21,7 +21,8 @@ paiement, IA (crédits), communications (e-mail / SMS / WhatsApp), super admin.
 | Phase 4 — Dashboard & onboarding (KPIs réels, assistant 7 étapes, création événement minimale, équipe & invitations) | ✅ |
 | Phase 5 — Événements : CRUD complet, machine à états, duplication, personnes, page publique /e/[slug], livre d'or | ✅ |
 | Phase 6 — Invités : CRUD, recherche/filtres/tris, pagination, tables, import CSV/Excel (5 étapes), export CSV | ✅ |
-| Phases 7 → 15 | ⏳ |
+| Phase 7 — Studio design : bibliothèque de 19 templates (dont 8 styles Save the Date), éditeur visuel (texte/formes/icônes/images/QR, undo/redo, autosave 1 s), médiathèque (compression, vignettes, quota), export PNG/PDF | ✅ |
+| Phases 8 → 15 | ⏳ |
 
 ## Documentation
 

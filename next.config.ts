@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // pdfkit charge des métriques de polices (.afm) et des assets depuis le disque :
+  // à laisser en require natif côté server (sinon le bundling perd les chemins relatifs).
+  serverExternalPackages: ['pdfkit', 'fontkit', 'restructure', 'iconv-lite'],
   async headers() {
     return [
       {

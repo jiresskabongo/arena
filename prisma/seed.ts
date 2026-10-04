@@ -1,8 +1,8 @@
 /**
  * EventFlow — Seeders (Phase 1)
  * Plans + prix (USD/CDF/EUR), 20 types d'événements, rôles,
- * templates de notifications, 12 templates de design plateforme (avec miniatures SVG),
- * super admin, feature flags.
+ * templates de notifications, templates de design plateforme
+ * (dont 8 styles Save the Date) avec miniatures SVG, super admin, feature flags.
  */
 import { hash } from '@node-rs/argon2';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -22,7 +22,7 @@ type Element = {
   rotation: number; opacity: number; z: number;
   text?: string; fontFamily?: 'display' | 'sans'; fontSize?: number; fontWeight?: number;
   color?: string; align?: 'left' | 'center' | 'right'; lineHeight?: number;
-  letterSpacing?: number; uppercase?: boolean;
+  letterSpacing?: number; uppercase?: boolean; italic?: boolean;
   src?: string; fit?: 'cover' | 'contain'; borderRadius?: number;
   shape?: 'rect' | 'circle' | 'ring' | 'line'; fill?: string; stroke?: string; strokeWidth?: number;
   icon?: string; iconColor?: string;
@@ -194,6 +194,97 @@ const templates = [
         el({ id: 's1', type: 'shape', shape: 'line', x: 470, y: 760, width: 140, height: 2, stroke: '#111111', strokeWidth: 2 }),
         el({ id: 't2', type: 'text', text: '12.06.2027', fontFamily: 'display', fontSize: 56, fontWeight: 400, color: '#444444', align: 'center', x: 140, y: 830, width: 800, height: 80 }),
         el({ id: 't3', type: 'text', text: 'Kinshasa', fontFamily: 'sans', fontSize: 30, color: '#777777', align: 'center', x: 140, y: 960, width: 800, height: 44 }),
+      ],
+    }),
+  // ── Save the Date : 8 styles (portraits 1080×1350 + 1 story 9:16) ──
+  T('tpl-sttd-luxe', 'Save the Date — Luxe Or', 'save_the_date', 'luxe', 'portrait', 1080, 1350,
+    {},
+    {
+      background: { type: 'pattern', value: 'linear-gradient(165deg, #0F172A, #1E293B 70%, #292524)' },
+      elements: [
+        el({ id: 'i1', type: 'icon', icon: 'star', x: 505, y: 330, width: 70, height: 70, iconColor: '#C9A227' }),
+        el({ id: 't0', type: 'text', text: 'SAVE THE DATE', fontFamily: 'sans', fontSize: 30, fontWeight: 600, color: '#C9A227', align: 'center', x: 140, y: 450, width: 800, height: 42, letterSpacing: 10 }),
+        el({ id: 't1', type: 'text', text: 'Awa & David', fontFamily: 'display', fontSize: 92, fontWeight: 600, color: '#F8FAFC', align: 'center', x: 140, y: 560, width: 800, height: 130 }),
+        el({ id: 's1', type: 'shape', shape: 'ring', x: 490, y: 760, width: 100, height: 100, stroke: '#C9A227', strokeWidth: 3 }),
+        el({ id: 't2', type: 'text', text: '12 juin 2027', fontFamily: 'display', fontSize: 52, color: '#E2E8F0', align: 'center', x: 140, y: 930, width: 800, height: 74 }),
+        el({ id: 't3', type: 'text', text: 'Lubumbashi', fontFamily: 'sans', fontSize: 28, color: '#94A3B8', align: 'center', x: 140, y: 1040, width: 800, height: 40 }),
+      ],
+    }),
+  T('tpl-sttd-floral', 'Save the Date — Floral', 'save_the_date', 'floral', 'portrait', 1080, 1350,
+    {},
+    {
+      background: { type: 'pattern', value: 'linear-gradient(170deg, #FDF2F4, #FBE4EA 60%, #F8D7E0)' },
+      elements: [
+        el({ id: 'i1', type: 'icon', icon: 'flower', x: 505, y: 320, width: 70, height: 70, iconColor: '#C2708A' }),
+        el({ id: 't0', type: 'text', text: 'SAVE THE DATE', fontFamily: 'sans', fontSize: 28, fontWeight: 600, color: '#C2708A', align: 'center', x: 140, y: 440, width: 800, height: 40, letterSpacing: 8 }),
+        el({ id: 't1', type: 'text', text: 'Awa & David', fontFamily: 'display', fontSize: 90, fontWeight: 500, color: '#8C4A5E', align: 'center', x: 140, y: 550, width: 800, height: 130 }),
+        el({ id: 's1', type: 'shape', shape: 'line', x: 440, y: 750, width: 200, height: 2, stroke: '#C2708A', strokeWidth: 2 }),
+        el({ id: 'i2', type: 'icon', icon: 'leaf', x: 505, y: 790, width: 70, height: 70, iconColor: '#7FA98E' }),
+        el({ id: 't2', type: 'text', text: '12.06.2027 · Kinshasa', fontFamily: 'sans', fontSize: 34, fontWeight: 600, color: '#8C4A5E', align: 'center', x: 140, y: 930, width: 800, height: 48 }),
+      ],
+    }),
+  T('tpl-sttd-gala', 'Save the Date — Gala', 'save_the_date', 'moderne', 'portrait', 1080, 1350,
+    {},
+    {
+      background: { type: 'color', value: '#111827' },
+      elements: [
+        el({ id: 's1', type: 'shape', shape: 'rect', x: 140, y: 380, width: 80, height: 8, fill: '#F59E0B' }),
+        el({ id: 't0', type: 'text', text: 'SAVE THE DATE', fontFamily: 'sans', fontSize: 34, fontWeight: 700, color: '#F59E0B', align: 'left', x: 140, y: 430, width: 800, height: 48, letterSpacing: 8 }),
+        el({ id: 't1', type: 'text', text: 'Gala de charité\nBanques & Solidarité', fontFamily: 'display', fontSize: 68, fontWeight: 600, color: '#F9FAFB', align: 'left', x: 140, y: 530, width: 820, height: 200, lineHeight: 1.25 }),
+        el({ id: 't2', type: 'text', text: 'Samedi 25 septembre 2027 — 19h', fontFamily: 'sans', fontSize: 34, color: '#E5E7EB', align: 'left', x: 140, y: 800, width: 820, height: 48 }),
+        el({ id: 't3', type: 'text', text: 'Centre de conférences, Kinshasa', fontFamily: 'sans', fontSize: 28, color: '#9CA3AF', align: 'left', x: 140, y: 880, width: 820, height: 40 }),
+      ],
+    }),
+  T('tpl-sttd-africain', 'Save the Date — Contemporain Africain', 'save_the_date', 'africain', 'portrait', 1080, 1350,
+    {},
+    {
+      background: { type: 'pattern', value: 'linear-gradient(160deg, #1C1917, #292524 55%, #44403C)' },
+      elements: [
+        el({ id: 'i1', type: 'icon', icon: 'diamond', x: 505, y: 320, width: 70, height: 70, iconColor: '#D97706' }),
+        el({ id: 't0', type: 'text', text: 'SAVE THE DATE', fontFamily: 'sans', fontSize: 30, fontWeight: 700, color: '#D97706', align: 'center', x: 140, y: 440, width: 800, height: 42, letterSpacing: 10 }),
+        el({ id: 't1', type: 'text', text: 'Awa & David', fontFamily: 'display', fontSize: 92, fontWeight: 700, color: '#FAFAF9', align: 'center', x: 140, y: 550, width: 800, height: 130 }),
+        el({ id: 's1', type: 'shape', shape: 'rect', x: 340, y: 760, width: 400, height: 4, fill: '#D97706' }),
+        el({ id: 't2', type: 'text', text: '12.06.2027', fontFamily: 'display', fontSize: 56, fontWeight: 500, color: '#E7E5E4', align: 'center', x: 140, y: 840, width: 800, height: 80 }),
+        el({ id: 't3', type: 'text', text: 'Kolwezi', fontFamily: 'sans', fontSize: 30, color: '#A8A29E', align: 'center', x: 140, y: 970, width: 800, height: 44 }),
+      ],
+    }),
+  T('tpl-sttd-corporate', 'Save the Date — Corporate', 'save_the_date', 'professionnel', 'portrait', 1080, 1350,
+    {},
+    {
+      background: { type: 'color', value: '#F8FAFC' },
+      elements: [
+        el({ id: 's1', type: 'shape', shape: 'rect', x: 140, y: 400, width: 800, height: 4, fill: '#0369A1' }),
+        el({ id: 't0', type: 'text', text: 'SAVE THE DATE', fontFamily: 'sans', fontSize: 32, fontWeight: 700, color: '#0369A1', align: 'center', x: 140, y: 450, width: 800, height: 44, letterSpacing: 8 }),
+        el({ id: 't1', type: 'text', text: 'Conférence annuelle', fontFamily: 'display', fontSize: 72, fontWeight: 600, color: '#0F172A', align: 'center', x: 140, y: 560, width: 800, height: 100 }),
+        el({ id: 't2', type: 'text', text: 'Innovation & Impact 2027', fontFamily: 'sans', fontSize: 34, color: '#475569', align: 'center', x: 140, y: 700, width: 800, height: 48 }),
+        el({ id: 't3', type: 'text', text: 'Mardi 3 novembre 2027 · 09h — 17h', fontFamily: 'sans', fontSize: 30, fontWeight: 600, color: '#0369A1', align: 'center', x: 140, y: 900, width: 800, height: 44 }),
+        el({ id: 't4', type: 'text', text: 'Kinshasa', fontFamily: 'sans', fontSize: 26, color: '#94A3B8', align: 'center', x: 140, y: 980, width: 800, height: 38 }),
+      ],
+    }),
+  T('tpl-sttd-romantique', 'Save the Date — Romantique', 'save_the_date', 'romantique', 'portrait', 1080, 1350,
+    {},
+    {
+      background: { type: 'color', value: '#FDF6EC' },
+      elements: [
+        el({ id: 'i1', type: 'icon', icon: 'heart', x: 505, y: 320, width: 70, height: 70, iconColor: '#B76E79' }),
+        el({ id: 't0', type: 'text', text: 'Save the Date', fontFamily: 'display', fontSize: 40, italic: true, color: '#B76E79', align: 'center', x: 140, y: 440, width: 800, height: 56 }),
+        el({ id: 't1', type: 'text', text: 'Awa & David', fontFamily: 'display', fontSize: 96, fontWeight: 500, color: '#7C5C50', align: 'center', x: 140, y: 550, width: 800, height: 140 }),
+        el({ id: 's1', type: 'shape', shape: 'line', x: 450, y: 770, width: 180, height: 2, stroke: '#C4956A', strokeWidth: 2 }),
+        el({ id: 't2', type: 'text', text: '12 juin 2027', fontFamily: 'display', fontSize: 54, color: '#7C5C50', align: 'center', x: 140, y: 840, width: 800, height: 76 }),
+        el({ id: 't3', type: 'text', text: 'Lubumbashi', fontFamily: 'sans', fontSize: 28, color: '#A99285', align: 'center', x: 140, y: 960, width: 800, height: 40 }),
+      ],
+    }),
+  T('tpl-sttd-story', 'Save the Date — Story 9:16', 'save_the_date', 'moderne', 'story', 1080, 1920,
+    { isFeatured: true },
+    {
+      background: { type: 'pattern', value: 'linear-gradient(180deg, #1E1B4B, #312E81 55%, #4338CA)' },
+      elements: [
+        el({ id: 't0', type: 'text', text: 'SAVE THE DATE', fontFamily: 'sans', fontSize: 40, fontWeight: 700, color: '#A5B4FC', align: 'center', x: 140, y: 560, width: 800, height: 56, letterSpacing: 10 }),
+        el({ id: 't1', type: 'text', text: 'Awa & David', fontFamily: 'display', fontSize: 110, fontWeight: 600, color: '#EEF2FF', align: 'center', x: 90, y: 700, width: 900, height: 160 }),
+        el({ id: 's1', type: 'shape', shape: 'ring', x: 490, y: 960, width: 100, height: 100, stroke: '#A5B4FC', strokeWidth: 3 }),
+        el({ id: 't2', type: 'text', text: '12.06.2027', fontFamily: 'display', fontSize: 72, color: '#C7D2FE', align: 'center', x: 140, y: 1160, width: 800, height: 100 }),
+        el({ id: 't3', type: 'text', text: 'Kinshasa', fontFamily: 'sans', fontSize: 36, color: '#A5B4FC', align: 'center', x: 140, y: 1320, width: 800, height: 50 }),
+        el({ id: 't4', type: 'text', text: 'www.eventflow.app/i/awa-david', fontFamily: 'sans', fontSize: 28, color: '#818CF8', align: 'center', x: 140, y: 1700, width: 800, height: 40 }),
       ],
     }),
   T('tpl-babyshower-douceur', 'Douceur — Baby Shower', 'bapteme', 'floral', 'portrait', 1080, 1350,

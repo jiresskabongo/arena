@@ -25,6 +25,7 @@ export type Permission =
   | 'design:delete'
   | 'design:export'
   | 'design:use_premium_template'
+  | 'media:write'
   | 'stats:read'
   | 'stats:advanced'
   | 'stats:export'
@@ -60,6 +61,7 @@ const MATRIX: Record<Permission, readonly OrgRole[]> = {
   'design:delete': OWNER_MANAGER,
   'design:export': CREATIVE,
   'design:use_premium_template': CREATIVE, // + contrôle du feature plan (subscription.hasFeature)
+  'media:write': CREATIVE,
   'stats:read': EVERYONE,
   'stats:advanced': OWNER_MANAGER,
   'stats:export': OWNER_MANAGER,
