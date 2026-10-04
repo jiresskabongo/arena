@@ -82,7 +82,12 @@ export default async function EventsPage({
               <CardHeader>
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <CardTitle className="text-base">{e.name}</CardTitle>
+                    <Link
+                      href={`/events/${e.id}`}
+                      className="font-display text-base font-semibold hover:underline"
+                    >
+                      {e.name}
+                    </Link>
                     <p className="mt-0.5 text-xs text-muted-foreground">
                       {typeLabels[e.typeCode] ?? e.typeCode}
                     </p>

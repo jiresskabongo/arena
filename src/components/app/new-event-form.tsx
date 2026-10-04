@@ -26,6 +26,7 @@ const OPTIONS = [
 
 export function NewEventForm({ locale }: { locale: string }) {
   const t = useTranslations('events');
+  const td = useTranslations('events.detail');
   const router = useRouter();
 
   const [busy, setBusy] = useState(false);
@@ -41,9 +42,14 @@ export function NewEventForm({ locale }: { locale: string }) {
     city: '',
     country: '',
     description: '',
+    contactPhone: '',
+    contactEmail: '',
+    website: '',
     dressCode: '',
     practicalInfo: '',
+    welcomeMessage: '',
   });
+  const [allowMultipleEntries, setAllowMultipleEntries] = useState(false);
   const [options, setOptions] = useState<Record<string, boolean>>({
     qr: true, rsvp: true, countdown: true,
     email: false, sms: false, whatsapp: false,
@@ -56,7 +62,16 @@ export function NewEventForm({ locale }: { locale: string }) {
     setBusy(true);
     const res = await apiFetch('/api/events', {
       method: 'POST',
-      body: JSON.stringify({ ...form, endTime: form.endTime || undefined, optionsJson: options }),
+      body: JSON.stringify({
+        ...form,
+        endTime: form.endTime || undefined,
+        contactPhone: form.contactPhone || undefined,
+        contactEmail: form.contactEmail || undefined,
+        website: form.website || undefined,
+        welcomeMessage: form.welcomeMessage || undefined,
+        allowMultipleEntries,
+        optionsJson: options,
+      }),
     }).finally(() => setBusy(false));
 
     if (res.ok) {
@@ -140,14 +155,40 @@ export function NewEventForm({ locale }: { locale: string }) {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
+            <Label htmlFor="ev-phone">{td('contactPhone')}</Label>
+            <Input id="ev-phone" value={form.contactPhone} onChange={(e) => set('contactPhone', e.target.value)} placeholder="+243 …" />
+          </div>
+          <div>
+            <Label htmlFor="ev-cemail">{td('contactEmail')}</Label>
+            <Input id="ev-cemail" type="email" value={form.contactEmail} onChange={(e) => set('contactEmail', e.target.value)} />
+          </div>
+          <div>
+            <Label htmlFor="ev-website">{td('website')}</Label>
+            <Input id="ev-website" value={form.website} onChange={(e) => set('website', e.target.value)} placeholder="https://…" />
+          </div>
+          <div>
             <Label htmlFor="ev-dress">{t('dressCode')}</Label>
             <Input id="ev-dress" value={form.dressCode} onChange={(e) => set('dressCode', e.target.value)} />
           </div>
-          <div>
+          <div className="sm:col-span-2">
+            <Label htmlFor="ev-welcome">{td('welcomeMessage')}</Label>
+            <Input id="ev-welcome" value={form.welcomeMessage} onChange={(e) => set('welcomeMessage', e.target.value)} />
+          </div>
+          <div className="sm:col-span-2">
             <Label htmlFor="ev-info">{t('practicalInfo')}</Label>
             <Input id="ev-info" value={form.practicalInfo} onChange={(e) => set('practicalInfo', e.target.value)} />
           </div>
         </div>
+
+        <label className="flex cursor-pointer items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            className="size-4 accent-primary"
+            checked={allowMultipleEntries}
+            onChange={(e) => setAllowMultipleEntries(e.target.checked)}
+          />
+          {td('multipleEntries')}
+        </label>
 
         <div>
           <p className="mb-2 text-sm font-medium">{t('optionsTitle')}</p>

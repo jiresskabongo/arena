@@ -927,6 +927,18 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
 8. **Vérification e-mail réelle** : mock (lien visible dans l'outbox démo) car pas de SMTP ici ;
    le flux complet (token, expiration, un-usage) est réel et testé.
 
+**Ajouts Phase 5 :**
+
+9. **Photos des personnalités** : avatars à initiales affichés ; les vraies photos (upload,
+   miniatures, quota) arrivent avec le module médias (Phase 7) — le champ `mediaId` est déjà
+   prévu sur `EventMember`.
+10. **Livre d'or auto-validé** : les dépôts publics sont publiés immédiatement (statut
+    `approved` inséré) ; le champ de statuts (pending/approved/rejected) et la file de
+    modération arrivent en Phase 12. Le dépôt est limité par rate limiting (`guestbook`).
+11. **RSVP/QR en blocs d'information** sur la page publique (le flux RSVP complet, les QR
+    uniques par invité et le check-in arrivent en Phase 8) ; la galerie est un placeholder
+    (Phase 7) ; la duplication copie config + options **sans** les invités.
+
 ---
 
 ## 14. Points à valider avant la Phase 0

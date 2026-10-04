@@ -19,7 +19,8 @@ paiement, IA (crédits), communications (e-mail / SMS / WhatsApp), super admin.
 | Phase 2 — Authentification (register/login/logout, Argon2id, sessions par appareil, vérif. e-mail, reset, rate limiting) | ✅ |
 | Phase 3 — Multi-tenancy & SaaS (contexte tenant, matrice 5 rôles, essai gratuit, quotas réels, page Plan & quotas) | ✅ |
 | Phase 4 — Dashboard & onboarding (KPIs réels, assistant 7 étapes, création événement minimale, équipe & invitations) | ✅ |
-| Phases 5 → 15 | ⏳ |
+| Phase 5 — Événements : CRUD complet, machine à états, duplication, personnes, page publique /e/[slug], livre d'or | ✅ |
+| Phases 6 → 15 | ⏳ |
 
 ## Documentation
 
