@@ -1119,6 +1119,26 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
    de son événement) ; un design généré ouvre directement dans l'éditeur
    (proposition 100 % éditable). Permission `design:create`.
 
+**Ajouts Phase 14 :**
+
+43. **Garde super admin** : `requireSuperAdmin()` (401/403) sur toutes les routes
+   `/api/admin/*` + layout `/admin` (écran « Accès réservé » explicite, jamais de
+   page blanche). Les routes plans P11 déjà présentes passent par la même garde.
+44. **Panneau admin** (`src/server/services/admin.ts` + 15 routes + 11 pages) :
+   dashboard KPIs (comptés à la volée), utilisateurs/organisations/événements
+   (recherche, actions, suppressions **protégées** : owner d'org active → 409,
+   sub active → 409), abonnements/paiements (le plan n'a pas de relation
+   Prisma → join manuel), templates plateforme (suppression → archivage si
+   référencé par des designs), crédits IA (ajustement = ligne
+   `AiUsage admin_adjustment`, delta<0 = crédit, delta>0 = dépense), logs
+   (filtres action/orgId/date), analytics descriptives 6 mois.
+45. **Plans CRUD** : `POST /api/admin/plans` (code unique, limites, features,
+   prix × devises), `PUT` (édition — les quotas sont calculés à la volée sur le
+   plan ⇒ application immédiate côté client, critère P14), `POST /:id/archive`
+   (les subs existantes conservent le plan). Recherche admin **case-sensitive**
+   sur SQLite (`mode: insensitive` = PostgreSQL uniquement — limitation sandbox,
+   §13).
+
 ---
 
 ## 14. Points à valider avant la Phase 0

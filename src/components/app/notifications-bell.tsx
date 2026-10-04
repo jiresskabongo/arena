@@ -32,6 +32,10 @@ export function NotificationsBell() {
     if (res.ok && res.data) {
       setItems(res.data.notifications);
       setUnread(res.data.unreadCount);
+    } else if (res.status === 409) {
+      // Super admin (hors organisation) : aucune notification produit
+      setItems([]);
+      setUnread(0);
     }
   }, []);
 

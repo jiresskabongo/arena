@@ -96,6 +96,18 @@ export async function requireTenant(permission?: Permission): Promise<TenantCont
 }
 
 /**
+ * Garde super admin (espace plateforme, hors tenant) : 401 si non authentifié,
+ * 403 si le compte n'a pas le drapeau isSuperAdmin.
+ */
+export async function requireSuperAdmin(): Promise<TenantContext> {
+  const ctx = await getTenantContext();
+  if (!ctx.isSuperAdmin) {
+    throw new TenantError(403, 'forbidden', 'Accès réservé aux administrateurs de la plateforme.');
+  }
+  return ctx;
+}
+
+/**
  * Filtre tenant OBLIGATOIRE pour toute requête multi-tenant (critère d'acceptation P).
  * Ne JAMAIS construire un where d'organisation à la main ailleurs.
  */
