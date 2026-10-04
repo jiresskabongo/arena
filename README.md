@@ -23,7 +23,8 @@ paiement, IA (crédits), communications (e-mail / SMS / WhatsApp), super admin.
 | Phase 6 — Invités : CRUD, recherche/filtres/tris, pagination, tables, import CSV/Excel (5 étapes), export CSV | ✅ |
 | Phase 7 — Studio design : bibliothèque de 19 templates (dont 8 styles Save the Date), éditeur visuel (texte/formes/icônes/images/QR, undo/redo, autosave 1 s), médiathèque (compression, vignettes, quota), export PNG/PDF | ✅ |
 | Phase 8 — Invitations, QR & RSVP : génération en lot (1 invitation + token opaque + QR unique par invité), page publique /i/[token] mobile-first, RSVP (confirmé / peut-être / décliné, accompagnants, questions personnalisées), stats temps réel, anti-énumération, révocation | ✅ |
-| Phases 9 → 15 | ⏳ |
+| Phase 9 — Contrôle d'accès : agents de scan (token opaque, points d'entrée, permissions), app scanner mobile /scanner/[token] (caméra BarcodeDetector, saisie manuelle), check-in transactionnel idempotent (clientUuid), anti-réutilisation, multi-entrée, mode hors ligne (pré-sync + journal local + replay batch), historique paginé | ✅ |
+| Phases 10 → 15 | ⏳ |
 
 ## Documentation
 

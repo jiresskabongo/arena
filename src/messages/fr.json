@@ -632,7 +632,72 @@
       "error": "Une erreur est survenue."
     },
     "invitationsLink": "Invitations & QR",
-    "invitationsLinkBody": "Générez un lien + QR unique par invité et suivez les RSVP."
+    "invitationsLinkBody": "Générez un lien + QR unique par invité et suivez les RSVP.",
+    "checkin": {
+      "title": "Contrôle d'accès",
+      "refresh": "Actualiser",
+      "loading": "Chargement…",
+      "singleEntry": "Une seule entrée par QR (multi-entrée désactivée pour cet événement). Un 2e scan signalera « déjà utilisé ».",
+      "stat": {
+        "present": "Présents",
+        "scans": "Scans",
+        "activeAgents": "Agents actifs"
+      },
+      "agents": {
+        "title": "Agents de scan",
+        "name": "Nom de l'agent",
+        "entryPoint": "Point d'entrée",
+        "permSearch": "Recherche invité",
+        "permHistory": "Historique",
+        "create": "Créer",
+        "empty": "Aucun agent de scan. Créez un agent pour obtenir son lien mobile de scan.",
+        "agentCreated": "Agent « {name} » créé.",
+        "linkCopied": "Lien scanner copié.",
+        "copyError": "Impossible de copier le lien.",
+        "openScanner": "Scanner",
+        "copyLink": "Copier le lien scanner",
+        "deactivate": "Désactiver",
+        "activate": "Activer",
+        "inactive": "Inactif",
+        "agentActivated": "Agent activé.",
+        "agentDeactivated": "Agent désactivé.",
+        "perms": "Recherche {search} · Historique {history}"
+      },
+      "history": {
+        "title": "Historique des check-ins",
+        "searchPlaceholder": "Rechercher un invité…",
+        "empty": "Aucun scan enregistré pour l'instant. Les résultats du contrôle d'accès apparaîtront ici.",
+        "th": {
+          "guest": "Invité",
+          "result": "Résultat",
+          "entry": "Entrée",
+          "agent": "Agent",
+          "time": "Heure"
+        }
+      },
+      "filter": {
+        "all": "Tous les résultats"
+      },
+      "result": {
+        "valid": "Validé",
+        "already_used": "Déjà utilisé",
+        "invalid": "Invalide",
+        "expired": "Expiré"
+      },
+      "entry": {
+        "entrance": "Entrée",
+        "vip": "VIP",
+        "staff": "Équipe",
+        "family": "Famille",
+        "custom": "Personnalisé"
+      },
+      "pageOf": "Page {page} / {total}",
+      "prev": "Préc.",
+      "next": "Suiv.",
+      "error": "Une erreur est survenue."
+    },
+    "checkinLink": "Contrôle d'accès",
+    "checkinLinkBody": "Agents de scan, check-ins et historique du passage."
   },
   "notFound": {
     "code": "404",
@@ -856,5 +921,49 @@
         "empty": "Aucun média. Téléversez une photo (max 8 Mo)."
       }
     }
+  },
+  "scanner": {
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "pendingSync": "{n} en attente",
+    "inputPlaceholder": "Token ou lien QR…",
+    "scan": "Scanner",
+    "camera": "Caméra",
+    "noCamera": "Caméra QR non disponible sur ce navigateur — saisissez le token ou le lien manuellement.",
+    "result": {
+      "valid": "Bienvenue !",
+      "already_used": "Déjà utilisé",
+      "invalid": "Invalide",
+      "expired": "Expiré"
+    },
+    "offlineScan": "Scan hors ligne (sera synchronisé)",
+    "table": "Table",
+    "firstEntryAt": "1re entrée plus tôt",
+    "category": {
+      "famille": "Famille",
+      "amis": "Amis",
+      "vip": "VIP",
+      "collegues": "Collègues",
+      "autres": "Autres"
+    },
+    "searchPlaceholder": "Rechercher un invité…",
+    "rsvp": {
+      "pending": "en attente",
+      "confirmed": "confirmé",
+      "declined": "décliné",
+      "maybe": "peut-être"
+    },
+    "present": "Présent",
+    "notPresent": "Absent",
+    "historyTitle": "Scans de la session",
+    "unknownGuest": "Invité inconnu",
+    "entry": {
+      "entrance": "Entrée",
+      "vip": "VIP",
+      "staff": "Équipe",
+      "family": "Famille",
+      "custom": "Personnalisé"
+    },
+    "footer": "Contrôle d'accès EventFlow — le QR est personnel."
   }
 }

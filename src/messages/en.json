@@ -632,7 +632,72 @@
       "error": "Something went wrong."
     },
     "invitationsLink": "Invitations & QR",
-    "invitationsLinkBody": "Generate a unique link + QR per guest and track RSVPs."
+    "invitationsLinkBody": "Generate a unique link + QR per guest and track RSVPs.",
+    "checkin": {
+      "title": "Access control",
+      "refresh": "Refresh",
+      "loading": "Loading…",
+      "singleEntry": "Single entry per QR (multiple entries disabled for this event). A 2nd scan will be reported as “already used”.",
+      "stat": {
+        "present": "Present",
+        "scans": "Scans",
+        "activeAgents": "Active agents"
+      },
+      "agents": {
+        "title": "Scanner agents",
+        "name": "Agent name",
+        "entryPoint": "Entry point",
+        "permSearch": "Guest search",
+        "permHistory": "History",
+        "create": "Create",
+        "empty": "No scanner agents. Create an agent to get its mobile scan link.",
+        "agentCreated": "Agent “{name}” created.",
+        "linkCopied": "Scanner link copied.",
+        "copyError": "Could not copy the link.",
+        "openScanner": "Scanner",
+        "copyLink": "Copy scanner link",
+        "deactivate": "Deactivate",
+        "activate": "Activate",
+        "inactive": "Inactive",
+        "agentActivated": "Agent activated.",
+        "agentDeactivated": "Agent deactivated.",
+        "perms": "Search {search} · History {history}"
+      },
+      "history": {
+        "title": "Check-in history",
+        "searchPlaceholder": "Search a guest…",
+        "empty": "No scans recorded yet. Access-control results will show up here.",
+        "th": {
+          "guest": "Guest",
+          "result": "Result",
+          "entry": "Entry",
+          "agent": "Agent",
+          "time": "Time"
+        }
+      },
+      "filter": {
+        "all": "All results"
+      },
+      "result": {
+        "valid": "Valid",
+        "already_used": "Already used",
+        "invalid": "Invalid",
+        "expired": "Expired"
+      },
+      "entry": {
+        "entrance": "Entrance",
+        "vip": "VIP",
+        "staff": "Staff",
+        "family": "Family",
+        "custom": "Custom"
+      },
+      "pageOf": "Page {page} / {total}",
+      "prev": "Prev",
+      "next": "Next",
+      "error": "Something went wrong."
+    },
+    "checkinLink": "Access control",
+    "checkinLinkBody": "Scanner agents, check-ins and entry history."
   },
   "notFound": {
     "code": "404",
@@ -856,5 +921,49 @@
         "empty": "No media yet. Upload a photo (max 8 MB)."
       }
     }
+  },
+  "scanner": {
+    "online": "Online",
+    "offline": "Offline",
+    "pendingSync": "{n} pending",
+    "inputPlaceholder": "Token or QR link…",
+    "scan": "Scan",
+    "camera": "Camera",
+    "noCamera": "QR camera not available in this browser — enter the token or link manually.",
+    "result": {
+      "valid": "Welcome!",
+      "already_used": "Already used",
+      "invalid": "Invalid",
+      "expired": "Expired"
+    },
+    "offlineScan": "Offline scan (will be synced)",
+    "table": "Table",
+    "firstEntryAt": "first entry earlier",
+    "category": {
+      "famille": "Family",
+      "amis": "Friends",
+      "vip": "VIP",
+      "collegues": "Colleagues",
+      "autres": "Others"
+    },
+    "searchPlaceholder": "Search a guest…",
+    "rsvp": {
+      "pending": "pending",
+      "confirmed": "confirmed",
+      "declined": "declined",
+      "maybe": "maybe"
+    },
+    "present": "Present",
+    "notPresent": "Not present",
+    "historyTitle": "Session scans",
+    "unknownGuest": "Unknown guest",
+    "entry": {
+      "entrance": "Entrance",
+      "vip": "VIP",
+      "staff": "Staff",
+      "family": "Family",
+      "custom": "Custom"
+    },
+    "footer": "EventFlow access control — the QR is personal."
   }
 }

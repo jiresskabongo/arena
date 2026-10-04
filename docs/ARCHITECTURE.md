@@ -993,6 +993,37 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
    Révocation = `token.revokedAt` + `invitation.status=expired` (plus de vue publique,
    plus de RSVP).
 
+**Ajouts Phase 9 :**
+
+22. **Check-in = une ligne par invité** (`CheckIn.guestId @unique`) : la ligne est l'état
+   *courant* du passage. 1er scan → création (`result=valid`, `checked_in_at`,
+   `presence_status=present`) ; 2e scan sans multi-entrée → **pas de ligne** (résultat
+   `already_used` + audit `ActivityLog scan.already_used` — le re-scan redonne le même
+   résultat, idempotence sans état) ; multi-entrée → mise à jour de la ligne (horodatage
+   actualisé, `result=valid`). Scans `invalid`/`expired` résolus (token révoqué/expiré,
+   événement non publié) → ligne auditée. `clientUuid` = clé d'idempotence du replay
+   hors ligne (même uuid → même résultat, aucune écriture).
+23. **Agent de scan** : credential = token opaque (32B) lié à **un** événement ; pas de
+   compte requis (agent éphémère du jour) ; permissions `canViewPhoto`/`canSearch`/
+   `canSeeHistory` (`permissionsJson`). Un agent ne scanne que son événement (sinon
+   `agent_denied`, réponse générique identique aux autres erreurs). Activation/
+   désactivation instantanée (désactivé → refus).
+24. **Photo d'invité** : le modèle `Guest` n'a pas de champ photo → `photoUrl: null`
+   dans le résultat de scan ; la permission `canViewPhoto` est portée pour l'avenir
+   (ajout du champ = migration future, pas de changement de contrat API).
+25. **Hors ligne (CDC §28, MVP)** : pré-sync `GET /api/scanner/sync` (≤ 2000 invitations,
+   token → {guest min, checkedInAt, expiresAt, allowMultipleEntries}) ; journal local
+   **append-only dans localStorage** (pas d'IndexedDB chiffré — réservé prod) ; scan hors
+   ligne = mêmes règles que §9.4 appliquées sur le cache ; au retour réseau,
+   `POST /api/scanner/sync` rejoue en batch (≤ 200) avec les mêmes règles serveur ;
+   conflit (scan en ligne entre-temps) → le scan offline est re-qualifié `already_used`
+   côté agent ; **le serveur reste la source de vérité** (replay idempotent par
+   clientUuid). TTL/purge = à déconnexion (nettoyage du cache local).
+26. **Caméra** : `BarcodeDetector` natif (QR) si disponible, sinon saisie manuelle du
+   token ou du lien complet (le QR encode `APP_URL/i/<token>` → dernier segment du
+   chemin = token). Pas de dépendance JS de scan. Rate limiting `RATE_LIMIT_SCAN_PER_MIN`
+   (60/min/IP) sur scan et sync.
+
 ---
 
 ## 14. Points à valider avant la Phase 0
