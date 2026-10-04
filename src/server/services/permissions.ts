@@ -13,8 +13,10 @@ export type Permission =
   | 'event:delete'
   | 'guest:read'
   | 'guest:invite'
+  | 'guest:update'
   | 'guest:import'
   | 'guest:delete'
+  | 'table:manage'
   | 'rsvp:read'
   | 'checkin:scan'
   | 'checkin:manage'
@@ -46,8 +48,10 @@ const MATRIX: Record<Permission, readonly OrgRole[]> = {
   'event:delete': OWNER_MANAGER,
   'guest:read': EVERYONE,
   'guest:invite': CREATIVE,
+  'guest:update': CREATIVE,
   'guest:import': OWNER_MANAGER,
   'guest:delete': OWNER_MANAGER,
+  'table:manage': CREATIVE,
   'rsvp:read': EVERYONE,
   'checkin:scan': ['owner', 'manager', 'scanner'],
   'checkin:manage': OWNER_MANAGER,

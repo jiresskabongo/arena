@@ -939,6 +939,16 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
     uniques par invité et le check-in arrivent en Phase 8) ; la galerie est un placeholder
     (Phase 7) ; la duplication copie config + options **sans** les invités.
 
+**Ajouts Phase 6 :**
+
+12. **Import** : les lignes parsées sont conservées en mémoire client pendant le flux
+    (mapping → aperçu → correction) ; le serveur **re-valide toutes les lignes** à la
+    confirmation (source de vérité : format, tables, doublons existants + intra-fichier,
+    quota « toute ou rien ») et l'`ImportJob` journalise fichiers, comptes et erreurs.
+    XLSX : 1ʳᵉ feuille, max 5 000 lignes.
+13. **Export invités** : CSV (`;` + BOM UTF-8) avec filtres appliqués ; les exports
+    PDF/XLSX des rapports arrivent en Phase 12.
+
 ---
 
 ## 14. Points à valider avant la Phase 0

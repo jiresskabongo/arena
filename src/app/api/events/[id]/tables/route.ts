@@ -1,35 +1,40 @@
 import { NextResponse } from 'next/server';
 import { requireTenant } from '@/server/services/tenant';
-import { addGuest, listGuests } from '@/server/services/guest';
-import { createGuestSchema, listGuestsQuerySchema } from '@/lib/schemas/guest';
+import { listTables, createTable } from '@/server/services/guest';
+import { createTableSchema } from '@/lib/schemas/guest';
 import { apiError } from '@/server/http';
 import { headers } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
-/** GET /api/events/[id]/guests — liste paginée + filtres + tris (guest:read). */
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+/** GET /api/events/[id]/tables — tables + occupation (guest:read). */
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: eventId } = await params;
     const ctx = await requireTenant('guest:read');
-    const url = new URL(req.url);
-    const query = Object.fromEntries(url.searchParams.entries());
-    const q = listGuestsQuerySchema.parse(query);
-    const res = await listGuests(ctx, eventId, q);
-    return NextResponse.json({ ok: true, ...res });
+    const tables = await listTables(ctx, eventId);
+    return NextResponse.json({
+      ok: true,
+      tables: tables.map((t) => ({
+        id: t.id,
+        name: t.name,
+        capacity: t.capacity,
+        sortOrder: t.sortOrder,
+        occupied: t._count.guests,
+      })),
+    });
   } catch (e) {
     return apiError(e);
   }
 }
 
-/** POST /api/events/[id]/guests — ajout manuel (permission guest:invite). */
+/** POST /api/events/[id]/tables — création (table:manage). */
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: eventId } = await params;
-    const ctx = await requireTenant('guest:invite');
-
+    const ctx = await requireTenant('table:manage');
     const body = await req.json().catch(() => null);
-    const parsed = createGuestSchema.safeParse(body);
+    const parsed = createTableSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
         {
@@ -42,10 +47,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         { status: 400 },
       );
     }
-
     const ip = ((await headers()).get('x-forwarded-for') ?? '').split(',')[0]?.trim() || null;
-    const guest = await addGuest(ctx, eventId, parsed.data, ip);
-    return NextResponse.json({ ok: true, guest }, { status: 201 });
+    const table = await createTable(ctx, eventId, parsed.data, ip);
+    return NextResponse.json({ ok: true, table: { id: table.id, name: table.name, capacity: table.capacity } }, { status: 201 });
   } catch (e) {
     return apiError(e);
   }

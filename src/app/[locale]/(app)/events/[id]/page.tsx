@@ -3,11 +3,12 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { requireTenant, TenantError } from '@/server/services/tenant';
 import { getEventForOrg, listEventMembers } from '@/server/services/event';
 import { can } from '@/server/services/permissions';
+import Link from 'next/link';
 import { EventActions } from '@/components/app/event-actions';
 import { EventEditForm } from '@/components/app/event-edit-form';
 import { EventMembersPanel } from '@/components/app/event-members';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarDays, MapPin, Users } from 'lucide-react';
+import { ArrowRight, CalendarDays, MapPin, Users } from 'lucide-react';
 
 export default async function EventDetailPage({
   params,
@@ -76,6 +77,21 @@ export default async function EventDetailPage({
                 canUpdate={canUpdate}
                 canDelete={canDelete}
               />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">{t('guestsLink')}</CardTitle>
+              <CardDescription>{t('guestsLinkBody')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link
+                href={`/events/${event.id}/guests`}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+              >
+                {t('guestsLink')}
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
             </CardContent>
           </Card>
           <EventMembersPanel eventId={event.id} people={members} canEdit={canUpdate} />
