@@ -22,7 +22,8 @@ paiement, IA (crédits), communications (e-mail / SMS / WhatsApp), super admin.
 | Phase 5 — Événements : CRUD complet, machine à états, duplication, personnes, page publique /e/[slug], livre d'or | ✅ |
 | Phase 6 — Invités : CRUD, recherche/filtres/tris, pagination, tables, import CSV/Excel (5 étapes), export CSV | ✅ |
 | Phase 7 — Studio design : bibliothèque de 19 templates (dont 8 styles Save the Date), éditeur visuel (texte/formes/icônes/images/QR, undo/redo, autosave 1 s), médiathèque (compression, vignettes, quota), export PNG/PDF | ✅ |
-| Phases 8 → 15 | ⏳ |
+| Phase 8 — Invitations, QR & RSVP : génération en lot (1 invitation + token opaque + QR unique par invité), page publique /i/[token] mobile-first, RSVP (confirmé / peut-être / décliné, accompagnants, questions personnalisées), stats temps réel, anti-énumération, révocation | ✅ |
+| Phases 9 → 15 | ⏳ |
 
 ## Documentation
 

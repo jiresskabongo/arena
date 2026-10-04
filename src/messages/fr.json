@@ -574,7 +574,65 @@
           "companions": "Accompagnateurs"
         }
       }
-    }
+    },
+    "invitations": {
+      "title": "Invitations & QR",
+      "generate": "Générer les invitations",
+      "refresh": "Actualiser",
+      "loading": "Chargement…",
+      "empty": "Aucune invitation pour l'instant. Créez vos invités puis générez une invitation (lien + QR unique) pour chacun d'entre eux.",
+      "generated": "{created} invitation(s) générée(s) sur {total}.",
+      "alreadyAll": "Toutes les invitations existent déjà.",
+      "linkCopied": "Lien copié dans le presse-papiers.",
+      "copyError": "Impossible de copier le lien.",
+      "openLink": "Ouvrir",
+      "copyLink": "Copier le lien",
+      "revoke": "Révoquer l'invitation",
+      "revokeConfirm": "Révoquer l'invitation de {name} ? Le lien et le QR ne seront plus valables.",
+      "revoked": "Invitation révoquée.",
+      "expired": "Expirée",
+      "rsvpDisabled": "Le RSVP n'est pas activé pour cet événement (options de l'événement). Les invités verront un message de fermeture.",
+      "searchPlaceholder": "Rechercher un invité…",
+      "filter": {
+        "all": "Tous les statuts"
+      },
+      "th": {
+        "guest": "Invité",
+        "contact": "Contact",
+        "link": "Invitation",
+        "rsvp": "RSVP"
+      },
+      "companions": "+{n} accompagnant(s)",
+      "stat": {
+        "total": "Invités",
+        "pending": "En attente",
+        "confirmed": "Confirmés",
+        "maybe": "Peut-être",
+        "declined": "Refusés"
+      },
+      "pageOf": "Page {page} / {total}",
+      "prev": "Préc.",
+      "next": "Suiv.",
+      "questions": {
+        "title": "Questions RSVP",
+        "add": "Ajouter",
+        "empty": "Aucune question personnalisée. Ajoutez par exemple « Plats souhaités » ou « Allergies ».",
+        "labelPlaceholder": "Libellé (ex. : Allergies alimentaires)",
+        "typeText": "Texte",
+        "typeNumber": "Nombre",
+        "typeChoice": "Choix",
+        "choicesPlaceholder": "Options séparées par des virgules",
+        "required": "Obligatoire",
+        "save": "Enregistrer",
+        "saving": "Enregistrement…",
+        "questionsSaved": "Questions enregistrées.",
+        "error": "Une erreur est survenue."
+      },
+      "cancel": "Annuler",
+      "error": "Une erreur est survenue."
+    },
+    "invitationsLink": "Invitations & QR",
+    "invitationsLinkBody": "Générez un lien + QR unique par invité et suivez les RSVP."
   },
   "notFound": {
     "code": "404",
@@ -612,6 +670,38 @@
       "guestbookError": "Envoi impossible. Réessayez.",
       "guestbookEmpty": "Soyez le premier à laisser un mot.",
       "poweredBy": "Créé avec"
+    },
+    "invitation": {
+      "title": "Invitation",
+      "notFoundTitle": "Invitation introuvable",
+      "notFoundBody": "Ce lien n'existe pas ou a été révoqué. Vérifiez l'adresse reçue.",
+      "invitedTitle": "Vous êtes invité·e",
+      "invited": "{name}, votre place est réservée.",
+      "qrTitle": "Votre QR code unique",
+      "qrAlt": "QR code de votre invitation",
+      "qrBody": "Présentez ce QR au contrôle d'accès. Il est personnel et ne doit pas être partagé.",
+      "dressCode": "Dress code",
+      "rsvpTitle": "Confirmez votre présence",
+      "rsvpDisabled": "Le RSVP est fermé pour cet événement.",
+      "status": {
+        "confirmed": "Confirme",
+        "maybe": "Peut-être",
+        "declined": "Décline"
+      },
+      "companions": "Accompagnants",
+      "companionsHint": "Personnes supplémentaires venant avec vous (hors vous).",
+      "choose": "Choisir…",
+      "required": "Obligatoire",
+      "optional": "Facultatif",
+      "submit": "Envoyer ma réponse",
+      "sending": "Envoi…",
+      "submitted": "Merci, votre réponse a bien été enregistrée.",
+      "status2": "Statut : {status}",
+      "alreadyAnswered": "Vous pouvez modifier votre réponse à tout moment.",
+      "error": "Une erreur est survenue. Réessayez.",
+      "footer": "Invitation générée par EventFlow.",
+      "rsvpClosedTitle": "Le RSVP est clos",
+      "rsvpClosedBody": "L'événement est terminé : les réponses ne sont plus acceptées."
     }
   },
   "designs": {

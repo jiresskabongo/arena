@@ -967,6 +967,32 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
    (compression ≤ 2048 px qualité 82 + vignette 320 px ; fichiers non-images stockés tels
    quels ≤ 8 Mo).
 
+**Ajouts Phase 8 :**
+
+18. **Invitation = lien + QR unique par invité** : un lot d'invitations crée, pour chaque
+   invité sans invitation, 1 `Invitation` + 1 `InvitationToken` (32 octets aléatoires,
+   encodés base62, **sans PII** — le token ne doit pas permettre de deviner un email) +
+   1 `QRCode`. Idempotent (`guestId @unique` sur `Invitation` : relancer le lot ne crée
+   pas de doublon). Le QR encode `APP_URL + /i/<token>`. En sandbox `APP_URL` =
+   `http://localhost:3000` (QR « pointant » vers le serveur local) ; en prod la variable
+   `APP_URL` pointe sur le domaine réel. Le QR est *redessiné* côté client (data-URI) pour
+   la page publique et la liste admin — la colonne `QRCode.data` reste l'URL source.
+19. **Anti-énumération** : même réponse **404** pour token inconnu, révoqué, expiré, et
+   pour événement non publié (aucun leak de statut différent). La regex de longueur sur le
+   token évite les requêtes de base inutiles. La vue publique n'expose **ni email ni
+   téléphone** de l'invité.
+20. **RSVP public** : page `/i/[token]` mobile-first. Statuts `confirmed`/`maybe`/`declined`
+   + accompagnants (0–30) + questions personnalisées (text/number/choice, requises ou non,
+   max 10 questions, choix 2–10 valeurs). « En attente » = invitations **sans** RSVP.
+   Le RSVP est clos (403) après la fin de l'événement (date + `endTime`, UTC — approximation)
+   et désactivable par option d'événement (`options.rsvp`, 403). Synchronise
+   `Guest.rsvpStatus`. Rate limiting par IP+route (`RATE_LIMIT_PUBLIC_RSVP_PER_MIN`, défaut
+   10/min, 429 + `Retry-After`).
+21. **Statut d'invitation** : reste `draft` à la génération ; le passage à `sent` (et les
+   rappels) est fait par les communications (Phase 10) — on ne simule pas un envoi.
+   Révocation = `token.revokedAt` + `invitation.status=expired` (plus de vue publique,
+   plus de RSVP).
+
 ---
 
 ## 14. Points à valider avant la Phase 0
