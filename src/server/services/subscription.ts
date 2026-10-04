@@ -11,6 +11,7 @@ export type PlanLimits = Record<string, number>;
 export type PlanFeatures = Record<string, boolean>;
 
 export interface PlanView {
+  id: string;
   code: string;
   name: string;
   description: string;
@@ -22,6 +23,7 @@ export interface PlanView {
 
 export function toPlanView(plan: Plan): PlanView {
   return {
+    id: plan.id,
     code: plan.code,
     name: plan.name,
     description: plan.description,
@@ -51,6 +53,8 @@ export async function getPlanByCode(code: string): Promise<PlanView | null> {
 
 export interface SubscriptionView {
   status: string;
+  currentPeriodStart: Date;
+  currentPeriodEnd: Date;
   plan: PlanView;
   trialEndsAt: Date | null;
   cancelAtPeriodEnd: boolean;
@@ -67,6 +71,11 @@ export interface SubscriptionView {
  * en base (la bascule de statut est gérée par le fournisseur, Phase 8).
  */
 export async function getSubscriptionView(organizationId: string): Promise<SubscriptionView | null> {
+  // Rollover lazy (deterministe, sans cron) : renouvellement / passage a
+  // « canceled » a la lecture une fois la periode terminee (CDC §60).
+  const { rollSubscriptionIfDue } = await import('@/server/services/billing');
+  await rollSubscriptionIfDue(organizationId).catch(() => {});
+
   const sub = await prisma.subscription.findUnique({ where: { organizationId } });
   if (!sub) return null;
 
@@ -83,7 +92,7 @@ export async function getSubscriptionView(organizationId: string): Promise<Subsc
       ? Math.max(0, Math.ceil((sub.trialEndsAt.getTime() - Date.now()) / 86_400_000))
       : 0;
 
-  return { status: sub.status, plan, trialEndsAt: sub.trialEndsAt, cancelAtPeriodEnd: sub.cancelAtPeriodEnd, inTrial, daysLeft, trialExpired };
+  return { status: sub.status, currentPeriodStart: sub.currentPeriodStart, currentPeriodEnd: sub.currentPeriodEnd, plan, trialEndsAt: sub.trialEndsAt, cancelAtPeriodEnd: sub.cancelAtPeriodEnd, inTrial, daysLeft, trialExpired };
 }
 
 /**

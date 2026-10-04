@@ -1055,6 +1055,31 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
    variables `{{…}}`), automatisations (toggles) et outbox démo (filtre canal,
    recherche, pagination).
 
+**Ajouts Phase 11 :**
+
+32. **Provider paiement = mock** (réserve « providers mock identifiés ») : le checkout
+   crée une `Payment` `pending` (provider='mock') ; « Payer » dans l'UI est une
+   simulation clairement badgée « Démo ». **Le statut d'abonnement n'est modifié que
+   par le webhook** `POST /api/webhooks/mock` : signature HMAC-SHA256
+   (`x-mock-signature`, clé `MOCK_WEBHOOK_SECRET`), idempotence via
+   `WebhookEvent` @@unique([provider, providerEventId]) — **double livraison = 1 effet**
+   (critère O, testé). En production : Stripe, même contrat (checkout + webhooks signés).
+33. **Rollover sans cron (déterministe)** : `rollSubscriptionIfDue` appelé paresseusement
+   à la lecture (`getSubscriptionView`) — période terminée + résiliation programmée →
+   `canceled` (+ historique) ; période terminée + active → renouvellement mock (nouvelle
+   période + facture payée). Le mock ne connaît pas l'échec de renouvellement
+   (`past_due` = prod/Stripe).
+34. **Factures** : `INV-AAAA-NNNN` par organisation, statut `paid` au webhook de
+   succès, PDF (PDFKit base-14 — réserve #14) avec en-tête, montant (CDF sans
+   centimes — réserve CDF) et badge « DÉMO ». Liste paginée + téléchargement.
+35. **Post-trial** : `assertWritable` verrouille les écritures (`403 trial_expired`)
+   dès l'expiration de l'essai ; lecture/données conservées. Les prix CDF sont des
+   entiers sans centimes dans toute l'UI (`Intl.NumberFormat` maxFractionDigits 0).
+36. **Plans modifiables par super admin** (API `GET/PUT /api/admin/plans`) : limites,
+   features, trialDays, prix — appliqués immédiatement (calculés à la volée).
+   L'écran admin de gestion des plans arrive avec la Phase 14 (API d'abord, périmètre
+   P11 CDC §60 « plans modifiables par admin »).
+
 ---
 
 ## 14. Points à valider avant la Phase 0
