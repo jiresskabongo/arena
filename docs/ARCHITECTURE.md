@@ -1099,6 +1099,26 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
    export CSV dans l'onglet Stats. Page `/events/[id]/statistics` (KPIs, 4 graphiques
    recharts, rapports, modération) avec les états chargement/erreur/vide.
 
+**Ajouts Phase 13 :**
+
+40. **Provider IA mock déterministe** (`src/server/providers/ai`) : compositions
+   assemblées par hash du prompt + données événement (6 palettes, chip, halos,
+   bloc infos) + textes en gabarits FR. Aucun service externe (réserve §13) ;
+   l'UI badge « Démo » et `Design.isAiGenerated = true`. **Échec simulé** :
+   un prompt contenant `#fail` lève `AiProviderError` (déterministe, testable —
+   pas d'aléatoire dans le mock).
+41. **Cycle de crédits** : `assertQuota(aiCreditsPerMonth, coût)` → **réservation**
+   (`AiUsage` statut `pending` — état intermédiaire ajouté, les états finaux
+   restent success|failed) → exécution → `success` (+ `outputDesignId`) ou
+   `failed` + `creditsRefunded = coût` (remboursement intégral, la ligne ne
+   consomme plus de quota) → 502 `ai_provider_error`. Coûts démo : design = 10,
+   text = 5 (constants `AI_COSTS`). Historique `GET /api/ai/usage` (paginé +
+   total mensuel coût/remboursé/consommé).
+42. **Studio** : dialog « Générer avec l'IA » sur `/designs` (kind design|texte,
+   prompt, événement optionnel, variante depuis un design existant qui hérite
+   de son événement) ; un design généré ouvre directement dans l'éditeur
+   (proposition 100 % éditable). Permission `design:create`.
+
 ---
 
 ## 14. Points à valider avant la Phase 0

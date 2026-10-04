@@ -2,10 +2,12 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { requireTenant } from '@/server/services/tenant';
 import { listDesigns, listTemplates } from '@/server/services/design';
+import { listEvents } from '@/server/services/event';
 import { NewDesignDialog } from '@/components/app/designs/new-design-dialog';
+import { AiDialog } from '@/components/app/designs/ai-dialog';
 import { DesignsList } from '@/components/app/designs/designs-list';
 import { Card, CardContent } from '@/components/ui/card';
-import { Palette, Plus, Sparkles } from 'lucide-react';
+import { Palette, Sparkles } from 'lucide-react';
 
 export default async function DesignsPage({
   params,
@@ -19,9 +21,10 @@ export default async function DesignsPage({
   const ctx = await requireTenant();
   if (!ctx.organization) notFound();
 
-  const [designs, templates] = await Promise.all([
+  const [designs, templates, events] = await Promise.all([
     listDesigns(ctx, { page: 1, pageSize: 24 }),
     listTemplates(ctx),
+    listEvents(ctx.organization!.id, 1, 50),
   ]);
 
   // Sérialisation client (dates → ISO, noms de relations)
@@ -48,7 +51,12 @@ export default async function DesignsPage({
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
         </div>
-        <NewDesignDialog templates={templates} />
+        <div className="flex flex-wrap items-center gap-2">
+          <AiDialog
+            events={events.items.map((e) => ({ id: e.id, name: e.name }))}
+          />
+          <NewDesignDialog templates={templates} />
+        </div>
       </div>
 
       {/* Bibliothèque de templates */}
