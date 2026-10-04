@@ -1024,6 +1024,37 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
    chemin = token). Pas de dépendance JS de scan. Rate limiting `RATE_LIMIT_SCAN_PER_MIN`
    (60/min/IP) sur scan et sync.
 
+**Ajouts Phase 10 :**
+
+27. **Providers e-mail/SMS/WhatsApp = mock** (réserve §13 #4, déjà signalée) : les trois
+   canaux sont journalisés dans `MessageLog` (`provider='mock'`, `status='sent'`) et
+   exposés dans l'onglet **Boîte d'envoi (démo)** avec un badge « Démo » par canal.
+   En production : SMTP/SES, Twilio/Meta (WhatsApp API officielle uniquement). Pas de
+   faux « envoyé » — tout message est clairement identifié comme mock.
+28. **Quotas e-mail/SMS mensuels réels** : comptés à la volée sur `MessageLog` depuis le
+   1er du mois (par org), comparés à la limite du plan (`emailsPerMonth`/`smsPerMonth`).
+   Une campagne dont le nombre de destinataires dépasserait le quota restant est
+   **refusée avant envoi** (`403 quota_exceeded`, message lisible). La vérification
+   reprend aussi au niveau individuel des automatisations.
+29. **Automatisations (CDC §30)** : une ligne `Automation` par trigger par événement
+   (upsert). Les 3 triggers : `rsvp_confirmed` (déclenché à la **soumission** du RSVP
+   confirmé — un quota/erreur ne bloque PAS le RSVP, l'envoi est simplement renvoyé),
+   `event_48h` et `event_24h` (fenêtres temporelles). Les triggers temporels ne se
+   relancent que **24 h** après leur dernier `lastRunAt` (anti-relance déterministe,
+   sans infra cron — évalués via l'API « exécuter maintenant » et à la soumission).
+   Rappels e-mail uniquement, ciblant les invités `pending`/`maybe` (confirmés exclus).
+30. **Contenu custom de campagne** : le schéma P1 ne prévoit pas de champs `subject`/
+   `body` sur `NotificationCampaign` ; le sujet/corps custom (campagnes `custom`/
+   `change`) voyage donc dans `audienceJson` `{ scope, ids?, subject?, body? }` — pas de
+   migration, le contrat API reste `{type, channel, templateKey, audience, subject?,
+   body?}`.
+31. **Invitation → `sent`** : résout la réserve #21 — le passage `invitation.status='sent'`
+   (+ `sentAt`) et `guest.inviteStatus='sent'` est effectué **par la campagne
+   d'invitation à l'envoi** (pas à la génération). La page Communications regroupe :
+   campagnes (créer/envoyer/historique), templates (plateforme + surcharge org,
+   variables `{{…}}`), automatisations (toggles) et outbox démo (filtre canal,
+   recherche, pagination).
+
 ---
 
 ## 14. Points à valider avant la Phase 0

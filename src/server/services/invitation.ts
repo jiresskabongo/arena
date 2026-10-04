@@ -3,6 +3,7 @@ import { tenantWhere, TenantError, type TenantContext } from '@/server/services/
 import { getEventForOrg } from '@/server/services/event';
 import { logActivity } from '@/server/services/activity';
 import { generateSecureToken } from '@/lib/crypto';
+import { onRsvpConfirmed } from '@/server/services/communication';
 import type { Prisma } from '@prisma/client';
 
 /**
@@ -506,6 +507,16 @@ export async function submitRsvp(
     meta: { status, companions },
     ip,
   });
+
+  // Automation rsvp_confirmed (CDC §30) : confirmation auto avec lien QR.
+  // Quota dépassé / erreur → le RSVP reste confirmé (l'envoi est renvoyé).
+  if (status === 'confirmed') {
+    try {
+      await onRsvpConfirmed(event, invitation.guestId);
+    } catch {
+      /* quota ou template : journalisé par le log ci-dessus */
+    }
+  }
 
   return {
     ok: true,

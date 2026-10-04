@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { prisma } from '@/lib/prisma';
 import { getAuth } from '@/server/auth/session';
 import { UserMenu } from '@/components/app/user-menu';
+import { NotificationsBell } from '@/components/app/notifications-bell';
 import { AppNav } from '@/components/app/app-nav';
 import { can, isOrgRole } from '@/server/services/permissions';
 import { Sparkles } from 'lucide-react';
@@ -52,6 +53,7 @@ export default async function AppLayout({
           </Link>
           <div className="flex items-center gap-3">
             <AppNav canSeeTeam={canSeeTeam} />
+            <NotificationsBell />
           </div>
           <UserMenu
             firstName={auth.user.firstName}

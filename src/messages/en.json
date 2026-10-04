@@ -697,7 +697,83 @@
       "error": "Something went wrong."
     },
     "checkinLink": "Access control",
-    "checkinLinkBody": "Scanner agents, check-ins and entry history."
+    "checkinLinkBody": "Scanner agents, check-ins and entry history.",
+    "communications": {
+      "title": "Communications & reminders",
+      "loading": "Loading…",
+      "demo": "Demo",
+      "tab": {
+        "campaigns": "Campaigns",
+        "templates": "Templates",
+        "automations": "Automations",
+        "outbox": "Outbox"
+      },
+      "channel": {
+        "email": "Email",
+        "sms": "SMS",
+        "whatsapp": "WhatsApp"
+      },
+      "type": {
+        "invitation": "Invitation",
+        "confirmation": "Confirmation",
+        "reminder": "Reminder",
+        "change": "Change",
+        "custom": "Custom"
+      },
+      "type2": "Type",
+      "channel2": "Channel",
+      "template": "Template",
+      "audience": {
+        "all": "All guests",
+        "rsvp_pending": "RSVP pending",
+        "confirmed": "Confirmed",
+        "declined": "Declined"
+      },
+      "newCampaign": "New campaign",
+      "createAndSend": "Create and send",
+      "campaignCreated": "Campaign created.",
+      "campaignSent": "{sent} message(s) sent (demo).",
+      "campaignHistory": "Campaign history",
+      "noCampaigns": "No campaigns sent yet.",
+      "sent": "{sent} sent · {failed} failed",
+      "send": "Send",
+      "subjectPlaceholder": "Subject (custom)",
+      "bodyPlaceholder": "Message ({{…}} variables)",
+      "templatesTitle": "Message templates",
+      "variablesHint": "Available variables: {vars}",
+      "templateActive": "Active",
+      "platform": "Platform",
+      "overridden": "Overridden",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "templateSaved": "Template saved.",
+      "automationsTitle": "Automations",
+      "trigger": {
+        "rsvp_confirmed": "RSVP confirmed",
+        "event_48h": "2 days before (48 h)",
+        "event_24h": "1 day before (24 h)"
+      },
+      "triggerBody": {
+        "rsvp_confirmed": "On each confirmation: confirmation email with the QR link.",
+        "event_48h": "At T-2 days: email reminder to guests still pending.",
+        "event_24h": "At T-1 day: email reminder to unconfirmed guests."
+      },
+      "lastRun": "Last run: {at}",
+      "automationOn": "Automation enabled.",
+      "automationOff": "Automation disabled.",
+      "outboxTitle": "Outbox",
+      "outboxEmpty": "No messages yet. Mock messages will show up here (\"Demo\" badge).",
+      "filter": {
+        "all": "All channels"
+      },
+      "pageOf": "Page {page} / {total}",
+      "prev": "Prev",
+      "next": "Next",
+      "error": "Something went wrong."
+    },
+    "commLink": "Communications",
+    "commLinkBody": "Campaigns, templates, automations and outbox (demo)."
   },
   "notFound": {
     "code": "404",
@@ -965,5 +1041,11 @@
       "custom": "Custom"
     },
     "footer": "EventFlow access control — the QR is personal."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "loading": "Loading…",
+    "empty": "No notifications yet.",
+    "markAllRead": "Mark all as read"
   }
 }

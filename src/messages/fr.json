@@ -697,7 +697,83 @@
       "error": "Une erreur est survenue."
     },
     "checkinLink": "Contrôle d'accès",
-    "checkinLinkBody": "Agents de scan, check-ins et historique du passage."
+    "checkinLinkBody": "Agents de scan, check-ins et historique du passage.",
+    "communications": {
+      "title": "Communications & rappels",
+      "loading": "Chargement…",
+      "demo": "Démo",
+      "tab": {
+        "campaigns": "Campagnes",
+        "templates": "Templates",
+        "automations": "Automatisations",
+        "outbox": "Boîte d'envoi"
+      },
+      "channel": {
+        "email": "E-mail",
+        "sms": "SMS",
+        "whatsapp": "WhatsApp"
+      },
+      "type": {
+        "invitation": "Invitation",
+        "confirmation": "Confirmation",
+        "reminder": "Rappel",
+        "change": "Changement",
+        "custom": "Personnalisé"
+      },
+      "type2": "Type",
+      "channel2": "Canal",
+      "template": "Template",
+      "audience": {
+        "all": "Tous les invités",
+        "rsvp_pending": "RSVP en attente",
+        "confirmed": "Confirmés",
+        "declined": "Déclinés"
+      },
+      "newCampaign": "Nouvelle campagne",
+      "createAndSend": "Créer et envoyer",
+      "campaignCreated": "Campagne créée.",
+      "campaignSent": "{sent} message(s) envoyé(s) (démo).",
+      "campaignHistory": "Historique des campagnes",
+      "noCampaigns": "Aucune campagne envoyée pour l'instant.",
+      "sent": "{sent} envoyés · {failed} échecs",
+      "send": "Envoyer",
+      "subjectPlaceholder": "Sujet (custom)",
+      "bodyPlaceholder": "Message (variables {{…}})",
+      "templatesTitle": "Templates de messages",
+      "variablesHint": "Variables disponibles : {vars}",
+      "templateActive": "Actif",
+      "platform": "Plateforme",
+      "overridden": "Surchargé",
+      "edit": "Modifier",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "templateSaved": "Template enregistré.",
+      "automationsTitle": "Automatisations",
+      "trigger": {
+        "rsvp_confirmed": "RSVP confirmé",
+        "event_48h": "J-2 jours (48 h)",
+        "event_24h": "J-1 jour (24 h)"
+      },
+      "triggerBody": {
+        "rsvp_confirmed": "À chaque confirmation : e-mail de confirmation avec le lien QR.",
+        "event_48h": "À J-2 jours : rappel e-mail aux invités encore en attente.",
+        "event_24h": "À J-1 jour : rappel e-mail aux invités non confirmés."
+      },
+      "lastRun": "Dernière exécution : {at}",
+      "automationOn": "Automatisation activée.",
+      "automationOff": "Automatisation désactivée.",
+      "outboxTitle": "Boîte d'envoi",
+      "outboxEmpty": "Aucun message pour l'instant. Les messages mock apparaîtront ici (badge « Démo »).",
+      "filter": {
+        "all": "Tous les canaux"
+      },
+      "pageOf": "Page {page} / {total}",
+      "prev": "Préc.",
+      "next": "Suiv.",
+      "error": "Une erreur est survenue."
+    },
+    "commLink": "Communications",
+    "commLinkBody": "Campagnes, templates, automatisations et boîte d'envoi (démo)."
   },
   "notFound": {
     "code": "404",
@@ -965,5 +1041,11 @@
       "custom": "Personnalisé"
     },
     "footer": "Contrôle d'accès EventFlow — le QR est personnel."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "loading": "Chargement…",
+    "empty": "Aucune notification pour l’instant.",
+    "markAllRead": "Tout marquer lu"
   }
 }

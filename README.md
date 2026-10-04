@@ -24,7 +24,8 @@ paiement, IA (crédits), communications (e-mail / SMS / WhatsApp), super admin.
 | Phase 7 — Studio design : bibliothèque de 19 templates (dont 8 styles Save the Date), éditeur visuel (texte/formes/icônes/images/QR, undo/redo, autosave 1 s), médiathèque (compression, vignettes, quota), export PNG/PDF | ✅ |
 | Phase 8 — Invitations, QR & RSVP : génération en lot (1 invitation + token opaque + QR unique par invité), page publique /i/[token] mobile-first, RSVP (confirmé / peut-être / décliné, accompagnants, questions personnalisées), stats temps réel, anti-énumération, révocation | ✅ |
 | Phase 9 — Contrôle d'accès : agents de scan (token opaque, points d'entrée, permissions), app scanner mobile /scanner/[token] (caméra BarcodeDetector, saisie manuelle), check-in transactionnel idempotent (clientUuid), anti-réutilisation, multi-entrée, mode hors ligne (pré-sync + journal local + replay batch), historique paginé | ✅ |
-| Phases 10 → 15 | ⏳ |
+| Phase 10 — Communications & rappels (CDC §26, §30) : templates `{{…}}` (plateforme + surcharge org), campagnes invitation/confirmation/rappel/changement/custom × e-mail/SMS/WhatsApp (audience tous/RSVP en attente/confirmés/déclinés/sélection), **outbox démo** (providers mock identifiés, badge « Démo »), **quotas e-mail/SMS mensuels réels** (refus avant envoi si dépassés), automatisations (rsvp_confirmed → confirmation+QR, event_48h/24h → rappels anti-relance 24 h), invitation → `sent` à l'envoi | ✅ |
+| Phases 11 → 15 | ⏳ |
 
 ## Documentation
 

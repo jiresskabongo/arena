@@ -124,6 +124,21 @@ export default async function EventDetailPage({
               </Link>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">{t('commLink')}</CardTitle>
+              <CardDescription>{t('commLinkBody')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link
+                href={`/events/${event.id}/communications`}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+              >
+                {t('commLink')}
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </CardContent>
+          </Card>
           <EventMembersPanel eventId={event.id} people={members} canEdit={canUpdate} />
         </div>
 
