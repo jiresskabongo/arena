@@ -1080,6 +1080,25 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
    L'écran admin de gestion des plans arrive avec la Phase 14 (API d'abord, périmètre
    P11 CDC §60 « plans modifiables par admin »).
 
+**Ajouts Phase 12 :**
+
+37. **KPIs & graphiques calculés à la volée** (pas de matérialisation) : `GET
+   /api/events/:id/statistics` agrége invités/RSVP/check-ins/tables/livre d'or en une
+   seule passe. Les « arrivées/heure » utilisent l'horodatage UTC des scans (MVP ;
+   l'application du fuseau de l'événement = prod). Perspectives = confirmés +
+   accompagnants déclarés **au RSVP** (`Rsvp.companions`, pas le champ statique invité).
+38. **Rapports** : `GET /api/events/:id/reports/:type?format=csv|xlsx|pdf` — 8 types
+   (guests, rsvp, present, absent, scans, tables, stats, guestbook), générés à la
+   demande (export temp purgé, rien de persistant). CSV = `;` + BOM (convention P6),
+   XLSX = SheetJS, PDF = PDFKit base-14 (réserve #14). `Content-Disposition:
+   attachment`. `already_used` n'apparaît pas dans « scans » (pas de ligne CheckIn —
+   réserve #22, audit ActivityLog).
+39. **Livre d'or** : dépôt public auto-publié (réserve #10) + **modération a posteriori**
+   (`PATCH /api/events/:id/guestbook/:mid` — approved | hidden | rejected, permission
+   `event:update`) ; la page publique ne liste que `approved`. Historique complet +
+   export CSV dans l'onglet Stats. Page `/events/[id]/statistics` (KPIs, 4 graphiques
+   recharts, rapports, modération) avec les états chargement/erreur/vide.
+
 ---
 
 ## 14. Points à valider avant la Phase 0

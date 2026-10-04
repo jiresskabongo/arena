@@ -802,7 +802,84 @@
       "error": "Une erreur est survenue."
     },
     "commLink": "Communications",
-    "commLinkBody": "Campagnes, templates, automatisations et boîte d'envoi (démo)."
+    "commLinkBody": "Campagnes, templates, automatisations et boîte d'envoi (démo).",
+    "statistics": {
+      "title": "Statistiques & rapports",
+      "loading": "Chargement des statistiques…",
+      "error": "Impossible de charger les statistiques de cet événement.",
+      "tab": {
+        "stats": "Statistiques",
+        "reports": "Rapports",
+        "guestbook": "Livre d'or"
+      },
+      "kpi": {
+        "guests": "Invités",
+        "confirmed": "Confirmés",
+        "expected": "Perspectives",
+        "present": "Présents",
+        "tables": "Tables (occ.)"
+      },
+      "chart": {
+        "rsvp": "Évolution des RSVP (cumulée)",
+        "arrivals": "Arrivées par heure (UTC)",
+        "category": "Présence par catégorie",
+        "tables": "Occupation des tables",
+        "seats": "Invités assis"
+      },
+      "empty": {
+        "rsvp": "Aucun RSVP enregistré pour l'instant.",
+        "present": "Aucun passage enregistré pour l'instant.",
+        "tables": "Aucune table créée pour cet événement."
+      },
+      "rsvp": {
+        "confirmed": "Confirmés",
+        "maybe": "Peut-être",
+        "declined": "Déclinés"
+      },
+      "reports": {
+        "title": "Rapports exportables",
+        "body": "Générés à la demande (rien de persistant) — CSV, XLSX ou PDF."
+      },
+      "report": {
+        "guests": "Invités",
+        "rsvp": "RSVP",
+        "present": "Présents",
+        "absent": "Confirmés absents",
+        "scans": "Historique des scans",
+        "tables": "Tables",
+        "stats": "Statistiques",
+        "guestbook": "Livre d'or"
+      },
+      "reportBody": {
+        "guests": "Tous les invités : contact, catégorie, invitation, RSVP, table.",
+        "rsvp": "Invités ayant répondu, avec accompagnants.",
+        "present": "Passages enregistrés au contrôle d'accès.",
+        "absent": "Confirmés sans passage (absents).",
+        "scans": "Journal complet des scans (heure, point d'entrée, résultat).",
+        "tables": "Occupation par table + total.",
+        "stats": "Synthèse des indicateurs clés.",
+        "guestbook": "Messages du livre d'or avec leur statut."
+      },
+      "guestbook": {
+        "title": "Livre d'or",
+        "all": "Tous les statuts",
+        "empty": "Aucun message dans le livre d'or.",
+        "approve": "Publier",
+        "hide": "Masquer",
+        "reject": "Rejeter",
+        "page": "Page {page}/{total} · {count} message(s)",
+        "prev": "Préc.",
+        "next": "Suiv."
+      },
+      "status": {
+        "approved": "Publié",
+        "pending": "En attente",
+        "hidden": "Masqué",
+        "rejected": "Rejeté"
+      }
+    },
+    "statsLink": "Statistiques",
+    "statsLinkBody": "KPIs, graphiques, rapports exportables et modération du livre d'or."
   },
   "notFound": {
     "code": "404",

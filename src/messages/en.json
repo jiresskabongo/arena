@@ -802,7 +802,84 @@
       "error": "Something went wrong."
     },
     "commLink": "Communications",
-    "commLinkBody": "Campaigns, templates, automations and outbox (demo)."
+    "commLinkBody": "Campaigns, templates, automations and outbox (demo).",
+    "statistics": {
+      "title": "Statistics & reports",
+      "loading": "Loading statistics…",
+      "error": "Unable to load this event's statistics.",
+      "tab": {
+        "stats": "Statistics",
+        "reports": "Reports",
+        "guestbook": "Guestbook"
+      },
+      "kpi": {
+        "guests": "Guests",
+        "confirmed": "Confirmed",
+        "expected": "Expected",
+        "present": "Present",
+        "tables": "Tables (occ.)"
+      },
+      "chart": {
+        "rsvp": "RSVP evolution (cumulative)",
+        "arrivals": "Arrivals by hour (UTC)",
+        "category": "Presence by category",
+        "tables": "Table occupancy",
+        "seats": "Seated guests"
+      },
+      "empty": {
+        "rsvp": "No RSVP recorded yet.",
+        "present": "No check-ins recorded yet.",
+        "tables": "No tables created for this event."
+      },
+      "rsvp": {
+        "confirmed": "Confirmed",
+        "maybe": "Maybe",
+        "declined": "Declined"
+      },
+      "reports": {
+        "title": "Exportable reports",
+        "body": "Generated on demand (nothing persistent) — CSV, XLSX or PDF."
+      },
+      "report": {
+        "guests": "Guests",
+        "rsvp": "RSVP",
+        "present": "Present",
+        "absent": "Confirmed absent",
+        "scans": "Scan history",
+        "tables": "Tables",
+        "stats": "Statistics",
+        "guestbook": "Guestbook"
+      },
+      "reportBody": {
+        "guests": "All guests: contact, category, invitation, RSVP, table.",
+        "rsvp": "Guests who replied, with companions.",
+        "present": "Entries recorded at access control.",
+        "absent": "Confirmed guests with no entry (absent).",
+        "scans": "Full scan log (time, entry point, result).",
+        "tables": "Occupancy per table + total.",
+        "stats": "Summary of key metrics.",
+        "guestbook": "Guestbook messages with their status."
+      },
+      "guestbook": {
+        "title": "Guestbook",
+        "all": "All statuses",
+        "empty": "No messages in the guestbook.",
+        "approve": "Publish",
+        "hide": "Hide",
+        "reject": "Reject",
+        "page": "Page {page}/{total} · {count} message(s)",
+        "prev": "Prev",
+        "next": "Next"
+      },
+      "status": {
+        "approved": "Published",
+        "pending": "Pending",
+        "hidden": "Hidden",
+        "rejected": "Rejected"
+      }
+    },
+    "statsLink": "Statistics",
+    "statsLinkBody": "KPIs, charts, exportable reports and guestbook moderation."
   },
   "notFound": {
     "code": "404",
