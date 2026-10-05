@@ -963,9 +963,9 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
    plusieurs designs liés au même événement ; pas de design multi-pages dans ce tronçon.
 17. **Médias publics** : `/api/storage/[key]` est public (les médias partagés via les
    invitations le sont par nature, CDC liens publics) ; clés non devinables (cuid/hex) ;
-   URLs signées temporisées = prod (P15). Quota `storageMb` appliqué à l'upload
-   (compression ≤ 2048 px qualité 82 + vignette 320 px ; fichiers non-images stockés tels
-   quels ≤ 8 Mo).
+   URLs signées temporisées : réservées prod (§13.49). Quota `storageMb` appliqué à
+   l'upload (compression ≤ 2048 px qualité 82 + vignette 320 px ; fichiers non-images
+   stockés tels quels ≤ 8 Mo).
 
 **Ajouts Phase 8 :**
 
@@ -1138,6 +1138,26 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
    (les subs existantes conservent le plan). Recherche admin **case-sensitive**
    sur SQLite (`mode: insensitive` = PostgreSQL uniquement — limitation sandbox,
    §13).
+
+**Ajouts Phase 15 :**
+
+46. **E2E navigateur (Playwright) réservé** : pas de navigateur dans la sandbox —
+   les critères d'acceptation A–P (CDC §74) sont couverts par (a) les tests
+   d'intégration vitest (route handlers complets, multi-tenant, webhooks, check-in),
+   (b) un smoke HTTP complet (vraie session : login → APIs admin → 11 pages 200),
+   (c) la table de traçabilité A–P du README. Playwright reste branché pour le
+   go-live (parcours A→F, scan via URL).
+47. **Moteurs Prisma en sandbox** : le CDN officiel `binaries.prisma.sh` est
+   injoignable ici → binaires (schema-engine + libquery_engine, debian-openssl-3.0.x)
+   provisionnés depuis un dépôt pinned Prisma **6.19.3** (sha256 vérifiées) + miroir
+   HTTP local (`PRISMA_ENGINES_MIRROR`, checksums ignorés). Sans impact en
+   production : l'install normale télécharge les binaires depuis le CDN officiel.
+48. **Cache dashboard/admin** : TTL 60 s **in-memory par process** (suffisant en
+   mono-instance dev/sandbox) ; multi-instance prod → Redis (section Déploiement,
+   `docs/DEPLOYMENT.md`). Les mutations admin bypassent le cache (nouvelle lecture).
+49. **URLs signées temporisées des médias** (cf. §13.17) et providers réels
+   (e-mail/SMS/WhatsApp/paiements) : interfaces + mock identifiés en place ;
+   branchement réel = checklist go-live (`docs/DEPLOYMENT.md`), hors MVP sandbox.
 
 ---
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useEscape } from '@/lib/use-escape';
 import { useTranslations } from 'next-intl';
 import { apiFetch } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -65,6 +66,7 @@ export function PlansAdmin() {
   const [error, setError] = useState(false);
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState<Draft | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [editErr, setEditErr] = useState<string | null>(null);
 
@@ -76,13 +78,17 @@ export function PlansAdmin() {
 
   useEffect(() => { void load(); }, [load]);
 
+  useEscape(Boolean(editing), () => setEditing(null));
+
   function openCreate() {
     setEditing(emptyDraft());
+    setEditId(null);
     setIsNew(true);
     setEditErr(null);
   }
   function openEdit(p: PlanRow) {
     setEditing(toDraft(p));
+    setEditId(p.id);
     setIsNew(false);
     setEditErr(null);
   }
@@ -117,7 +123,8 @@ export function PlansAdmin() {
       trialDays: Number(editing.trialDays) || 0,
       limits, features: editing.features, prices,
     };
-    const res = await apiFetch<{ plan: PlanRow }>(isNew ? '/api/admin/plans' : `/api/admin/plans/${editing.code === '' ? '' : plans?.find((x) => x.name === editing.name && x.code === editing.code)?.id ?? ''}`, {
+    const url = isNew ? '/api/admin/plans' : `/api/admin/plans/${editId ?? ''}`;
+    const res = await apiFetch<{ plan: PlanRow }>(url, {
       method: isNew ? 'POST' : 'PUT',
       body: JSON.stringify(body),
     });
@@ -203,7 +210,7 @@ export function PlansAdmin() {
       {editing && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 pt-10"
           onMouseDown={(e) => { if (e.target === e.currentTarget) setEditing(null); }}>
-          <div className="w-full max-w-2xl rounded-xl border bg-background p-6 shadow-lg">
+          <div role="dialog" aria-modal="true" aria-label="Plan" className="w-full max-w-2xl rounded-xl border bg-background p-6 shadow-lg">
             <h2 className="text-lg font-semibold">{isNew ? t('plans.new') : `${t('edit')} — ${editing.name}`}</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {isNew && (

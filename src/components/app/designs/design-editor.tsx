@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEscape } from '@/lib/use-escape'
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
@@ -1326,6 +1327,8 @@ function MediaLibraryModal({
   onPick: (m: MediaItem) => void;
   eventId?: string;
 }) {
+
+  useEscape(true, onClose);
   const t = useTranslations('designs.editor.media');
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1359,7 +1362,7 @@ function MediaLibraryModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div role="dialog" aria-modal="true" aria-label="Médiathèque" className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <Card className="w-full max-w-lg">
         <div className="space-y-3 p-4">
           <div className="flex items-center justify-between">

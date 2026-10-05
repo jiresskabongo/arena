@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useEscape } from '@/lib/use-escape';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { apiFetch } from '@/lib/api';
@@ -45,6 +46,8 @@ export function NewDesignDialog({ templates }: { templates: TemplateSummary[] })
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEscape(open, () => setOpen(false));
+
   const size = SIZES[format] ?? SIZES.portrait;
 
   async function submit() {
@@ -87,7 +90,7 @@ export function NewDesignDialog({ templates }: { templates: TemplateSummary[] })
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 pt-12"
           onMouseDown={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
         >
-          <div className="w-full max-w-2xl rounded-xl border bg-background p-6 shadow-lg">
+          <div role="dialog" aria-modal="true" aria-label="Nouveau design" className="w-full max-w-2xl rounded-xl border bg-background p-6 shadow-lg">
             <h2 className="text-lg font-semibold">{t('create.title')}</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">

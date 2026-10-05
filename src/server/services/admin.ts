@@ -27,9 +27,30 @@ function withPaging<T>(items: T[], total: number, page: number, pageSize: number
   };
 }
 
+// ── Cache mémoire TTL (perfs — KPIs/admin, multi-instances : le cache est
+// par process, l'incohérence est transitoire ≤ TTL) ─────────────────────────
+
+const ADMIN_CACHE_TTL_MS = 60_000;
+const adminCache = new Map<string, { at: number; value: unknown }>();
+
+function cached<T>(key: string, compute: () => Promise<T>): Promise<T> {
+  const hit = adminCache.get(key);
+  if (hit && Date.now() - hit.at < ADMIN_CACHE_TTL_MS) {
+    return Promise.resolve(hit.value as T);
+  }
+  return compute().then((value) => {
+    adminCache.set(key, { at: Date.now(), value });
+    return value;
+  });
+}
+
 // ── Dashboard (KPIs plateforme) ──────────────────────────────────────────────
 
 export async function adminDashboard() {
+  return cached('dashboard', () => computeAdminDashboard());
+}
+
+async function computeAdminDashboard() {
   const since7d = new Date(Date.now() - 7 * 86400000);
   const monthStart = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), 1));
 
@@ -510,6 +531,10 @@ export async function listAdminLogs(q: {
 // ── Analytics (métriques descriptives) ───────────────────────────────────────
 
 export async function adminAnalytics() {
+  return cached('analytics', () => computeAdminAnalytics());
+}
+
+async function computeAdminAnalytics() {
   const months: { key: string; label: string }[] = [];
   const now = new Date();
   for (let i = 5; i >= 0; i--) {

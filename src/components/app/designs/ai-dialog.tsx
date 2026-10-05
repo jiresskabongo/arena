@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useEscape } from '@/lib/use-escape';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { apiFetch } from '@/lib/api';
@@ -62,6 +63,8 @@ export function AiDialog({ events }: { events: EventOpt[] }) {
   useEffect(() => {
     if (open && tab === 'history') void loadHistory(1);
   }, [open, tab, loadHistory]);
+
+  useEscape(open, close);
 
   function close() {
     setOpen(false);
@@ -131,7 +134,7 @@ export function AiDialog({ events }: { events: EventOpt[] }) {
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 pt-12"
           onMouseDown={(e) => { if (e.target === e.currentTarget) close(); }}
         >
-          <div className="w-full max-w-xl rounded-xl border bg-background p-6 shadow-lg">
+          <div role="dialog" aria-modal="true" aria-label="Studio IA" className="w-full max-w-xl rounded-xl border bg-background p-6 shadow-lg">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold">{t('ai.title')}</h2>

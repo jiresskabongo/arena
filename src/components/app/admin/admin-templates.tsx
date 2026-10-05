@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useEscape } from '@/lib/use-escape';
 import { useTranslations } from 'next-intl';
 import { apiFetch } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -89,6 +90,8 @@ export function TemplatesAdmin() {
   }, [page, scope, debounced]);
 
   useEffect(() => { void load(); }, [load]);
+
+  useEscape(Boolean(draft), () => setDraft(null));
 
   function openCreate() { setDraft(emptyDraft()); setIsNew(true); setEditId(null); setErr(null); }
   function openEdit(x: Tpl) { setDraft(toDraft(x)); setIsNew(false); setEditId(x.id); setErr(null); }
@@ -211,7 +214,7 @@ export function TemplatesAdmin() {
       {draft && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 pt-10"
           onMouseDown={(e) => { if (e.target === e.currentTarget) setDraft(null); }}>
-          <div className="w-full max-w-2xl rounded-xl border bg-background p-6 shadow-lg">
+          <div role="dialog" aria-modal="true" aria-label="Template" className="w-full max-w-2xl rounded-xl border bg-background p-6 shadow-lg">
             <h2 className="text-lg font-semibold">{isNew ? t('templates.new') : `${t('edit')} — ${draft.name}`}</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <div className="space-y-1.5 sm:col-span-2">
