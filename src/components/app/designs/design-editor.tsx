@@ -111,7 +111,6 @@ export function DesignEditor({ design, locale }: { design: SerializedDesign; loc
           }
         })
         .catch(() => {});
-      // eslint-disable-next-line no-loop-func
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content.elements, content.background]);
@@ -155,6 +154,11 @@ export function DesignEditor({ design, locale }: { design: SerializedDesign; loc
     setContent((c) => updater(c));
     dirtyRef.current = true;
   }, []);
+
+  const deleteElement = useCallback((id: string) => {
+    commit((c) => ({ ...c, elements: c.elements.filter((e) => e.id !== id) }));
+    setSelectedId(null);
+  }, [commit]);
 
   useEffect(() => {
     if (!dirtyRef.current) return;
@@ -303,14 +307,9 @@ export function DesignEditor({ design, locale }: { design: SerializedDesign; loc
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [selectedId, undo, redo, mutate]);
+  }, [selectedId, deleteElement, undo, redo, mutate]);
 
   // ── Actions éléments ──────────────────────────────────────────
-  function deleteElement(id: string) {
-    commit((c) => ({ ...c, elements: c.elements.filter((e) => e.id !== id) }));
-    setSelectedId(null);
-  }
-
   function addElement(el: DesignElement) {
     commit((c) => ({ ...c, elements: [...c.elements, el] }));
     setSelectedId(el.id);
