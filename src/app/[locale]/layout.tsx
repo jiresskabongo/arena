@@ -41,8 +41,12 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className="h-full">
-      <body className="flex min-h-full flex-col">
+    // `suppressHydrationWarning` : le script inline ci-dessous ajoute la classe
+    // `dark` sur <html> AVANT l'hydratation (anti-flash). React ne rend donc
+    // jamais de `className` sur <html> — la classe du thème est hors de sa
+    // réconciliation (pas de mismatch, et aucune réécriture au re-render).
+    <html lang={locale} suppressHydrationWarning>
+      <body className="flex min-h-dvh flex-col">
         {/* Applique le thème avant le premier paint (évite le flash) */}
         <script
           id="theme-init"
