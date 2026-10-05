@@ -17,7 +17,7 @@ import {
   listDesigns, getDesign, createDesign, updateDesign, deleteDesign,
   duplicateDesign, listTemplates, saveDesignAsTemplate, exportDesign,
 } from '@/server/services/design';
-import { uploadMedia, listMedia, deleteMedia } from '@/server/services/media';
+import { uploadMedia, listMedia, deleteMedia, resolveStorageFile } from '@/server/services/media';
 import { TenantError, type TenantContext } from '@/server/services/tenant';
 
 const stamp = Date.now().toString(36);
@@ -302,6 +302,22 @@ describe('Médias', () => {
     const thumbKey = decodeURIComponent(res.thumbnailUrl!.replace('/api/storage/', ''));
     const thumb = await sharp(fs.readFileSync(path.join(process.cwd(), 'storage', 'media', thumbKey))).metadata();
     expect(Math.max(thumb.width!, thumb.height!)).toBeLessThanOrEqual(320);
+  });
+
+  it('serving /api/storage : buffer + MIME corrects, 404 sur clé inconnue/traversal', async () => {
+    const file = await prisma.mediaFile.findUnique({ where: { id: mediaId } });
+    expect(file).toBeTruthy();
+    const onDisk = fs.readFileSync(path.join(process.cwd(), 'storage', 'media', file!.storageKey));
+    const res = resolveStorageFile(file!.storageKey);
+    expect(res).not.toBeNull();
+    expect(res!.mimeType).toBe('image/jpeg');
+    expect(res!.buffer.equals(onDisk)).toBe(true);
+    // Clé inconnue / vide / traversal → null (404)
+    expect(resolveStorageFile('orgs/inexistant/zzz.jpg')).toBeNull();
+    expect(resolveStorageFile('')).toBeNull();
+    expect(resolveStorageFile('../.env')).toBeNull();
+    expect(resolveStorageFile('../../package.json')).toBeNull();
+    expect(resolveStorageFile('orgs/..')).toBeNull();
   });
 
   it('refuse un fichier vide et un fichier > 8 Mo', async () => {

@@ -961,7 +961,7 @@ Gate : **ne pas casser les fonctionnalités existantes** (CDC §72) — la suite
 16. **Save the Date « multiples compositions »** : MVP = 8 styles STTD (minimal, luxe or,
    floral, gala, contemporain africain, corporate, romantique, story 9:16) + composition de
    plusieurs designs liés au même événement ; pas de design multi-pages dans ce tronçon.
-17. **Médias publics** : `/api/storage/[key]` est public (les médias partagés via les
+17. **Médias publics** : `/api/storage/*` est public (les médias partagés via les
    invitations le sont par nature, CDC liens publics) ; clés non devinables (cuid/hex) ;
    URLs signées temporisées : réservées prod (§13.49). Quota `storageMb` appliqué à
    l'upload (compression ≤ 2048 px qualité 82 + vignette 320 px ; fichiers non-images

@@ -21,6 +21,13 @@ const EXT: Record<string, string> = {
   'image/gif': 'gif', 'image/svg+xml': 'svg',
   'text/csv': 'csv', 'application/json': 'json',
 };
+/** MIME par extension (service des fichiers — `resolveStorageFile`). */
+const EXT_TO_MIME: Record<string, string> = {
+  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
+  '.webp': 'image/webp', '.gif': 'image/gif', '.svg': 'image/svg+xml',
+  '.pdf': 'application/pdf', '.csv': 'text/csv', '.json': 'application/json',
+  '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+};
 
 function absKey(key: string): string {
   const k = key.replace(/^\/+/, '');
@@ -223,4 +230,33 @@ export async function readMediaById(mediaId: string): Promise<Buffer | null> {
   const file = await prisma.mediaFile.findUnique({ where: { id: mediaId } });
   if (!file || file.deletedAt) return null;
   return readMediaBuffer(file.storageKey);
+}
+
+/**
+ * Résout une clé de stockage (multi-segments, ex. `orgs/<orgId>/<hex>.jpg`)
+ * vers le fichier à servir : `null` = 404 (inconnu, traversal, hors répertoire).
+ * Le service de fichiers `/api/storage/*` est public par nature (§13.17) —
+ * la protection = clés non devinables ; URLs signées = prod (§13.49).
+ */
+export function resolveStorageFile(
+  key: string,
+): { buffer: Buffer; mimeType: string } | null {
+  const k = key.replace(/^\/+/, '');
+  if (!k || k.split('/').some((s) => s === '..' || s === '.')) return null;
+  let full: string;
+  try {
+    full = absKey(k);
+  } catch {
+    return null;
+  }
+  if (full !== ROOT && !full.startsWith(ROOT + path.sep)) return null;
+  let st: fs.Stats;
+  try {
+    st = fs.statSync(full);
+  } catch {
+    return null;
+  }
+  if (!st.isFile()) return null;
+  const mimeType = EXT_TO_MIME[path.extname(full).toLowerCase()] ?? 'application/octet-stream';
+  return { buffer: fs.readFileSync(full), mimeType };
 }

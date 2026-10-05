@@ -80,6 +80,7 @@ Légende : 🔒 = session membre · 🛡 = super admin · 🔑 = token (pas de s
 | GET | `/api/events/:id/guests/export?format=csv|xlsx` | 🔒 | Export CSV (`;` + BOM) ou XLSX. |
 | POST | `/api/events/:id/import/upload` | 🔒 | Upload CSV/XLSX → job d'import (aperçu, détection dupes par téléphone/e-mail). |
 | POST | `/api/events/:id/import/confirm` | 🔒 | Confirmation de l'import (mode `add` ou `merge`). |
+| GET | `/api/events/:id/import` | 🔒 | Historique des jobs d'import (`jobs[]` : statut, compteurs valides/erreurs/doublons). |
 
 ### Tables
 
@@ -165,9 +166,10 @@ Légende : 🔒 = session membre · 🛡 = super admin · 🔑 = token (pas de s
 
 | Méthode | Route | Accès | Description |
 |---|---|---|---|
-| POST | `/api/media/upload` | 🔒 | Multipart (jpg/png/webp, liste blanche MIME, taille réelle). Quota stockage. |
+| POST | `/api/media` | 🔒 | Upload multipart (champ `file` + `eventId`/`kind` optionnels ; jpg/png/webp/gif/svg, ≤ 8 Mo, compression ≤ 2048 px + vignette 320 px). Quota `storageMb`. |
+| GET | `/api/media?page&pageSize&kind` | 🔒 | Médiathèque paginée (`items[]` avec `url`, `thumbnailUrl`). |
 | DELETE | `/api/media/:id` | 🔒 | Suppression (soft `deletedAt`). |
-| GET | `/api/storage/:key` | 🔑 | **URL signée** (HMAC, TTL) pour servir les médias. |
+| GET | `/api/storage/*` | 👤 | Sert les fichiers (multi-segments, ex. `orgs/<orgId>/<hex>.jpg`) : `Content-Type` + `Cache-Control`. Public par nature (§13.17) — protection par clés non devinables ; URLs signées temporisées = prod (§13.49). |
 
 ## Public (aucune session)
 
