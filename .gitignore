@@ -1,7 +1,7 @@
 node_modules/
 .next/
 out/
-storage/
+/storage/
 prisma/*.db
 prisma/*.db-journal
 .env
