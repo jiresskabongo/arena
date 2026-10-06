@@ -148,7 +148,7 @@ export default async function DashboardPage({
                   ? `${stats.rsvpConfirmed}/${stats.rsvpTotal}`
                   : '0'
               }
-              hint={stats && stats.rsvpTotal > 0 ? t('kpiRsvpHint') : undefined}
+              hint={stats && stats.rsvpTotal > 0 ? t('kpiRsvpHint', { total: stats.rsvpTotal }) : undefined}
             />
             <KpiCard icon={LogIn} label={t('kpiCheckins')} value={String(stats?.checkins ?? 0)} />
             <KpiCard icon={Send} label={t('kpiSent')} value={String(stats?.sentThisMonth ?? 0)} />

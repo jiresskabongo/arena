@@ -39,10 +39,18 @@ export async function createSession(userId: string): Promise<string> {
 }
 
 export function sessionCookieOptions() {
+  // SameSite=None + Secure : la preview Arena affiche l'app dans un IFRAME
+  // cross-site — un cookie SameSite=Lax y est rejeté par le navigateur
+  // (login « réussi » mais cookie jamais stocké → boucle login).
+  // `Secure` est satisfait par HTTPS (preview/prod) et accepté sur
+  // localhost en dev (contexte sécurisé selon les navigateurs).
+  // CSRF : les routes API exigent Content-Type: application/json → un POST
+  // cross-origin déclenche un preflight CORS bloqué (aucun
+  // Access-Control-Allow-Origin) → pas de CSRF via formulaire.
   return {
     httpOnly: true,
-    sameSite: 'lax' as const,
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none' as const,
+    secure: true,
     path: '/',
     maxAge: Math.floor(sessionTtlMs() / 1000),
   };
