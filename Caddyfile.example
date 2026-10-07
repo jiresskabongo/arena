@@ -1,0 +1,30 @@
+# EventFlow — reverse proxy + TLS automatique (Caddy)
+#
+# Usage sur le VPS (après ./deploy.sh) :
+#   1. éditer le nom de domaine ci-dessous (ton-domaine.cd)
+#   2. dans docker-compose.yml, passer le port app en 127.0.0.1:3000:3000
+#      (le trafic public passe uniquement par Caddy)
+#   3. caddy run --config Caddyfile
+#
+# Caddy gère le TLS Let's Encrypt automatiquement (renouvellement inclus).
+# Préalable : le nom de domaine pointe vers le serveur (A/AAAA).
+
+ton-domaine.cd {
+	reverse_proxy 127.0.0.1:3000
+
+	encode zstd gzip
+
+	# Limites de taille (uploads médias)
+	request_body {
+		max_size 10MB
+	}
+
+	log {
+		output file /var/log/caddy/eventflow.log
+		format json
+	}
+}
+
+# Variante sans nom de domaine (test public sur l'IP) — ne fonctionne PAS en
+# TLS Let's Encrypt ; préférer un domaine. En dev local :
+#   127.0.0.1:8443 { reverse_proxy 127.0.0.1:3000 }

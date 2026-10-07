@@ -1,0 +1,23 @@
+# EventFlow — Fly.io (app de machines, build Dockerfile)
+# Usage : fly launch --no-deploy (valide cette config) puis fly deploy
+# DB    : fly postgres create eventflow-db  →  DATABASE_URL à définir
+#         (fly postgres credentials eventflow-db)
+app = "eventflow"
+primary_region = "cdg" # Paris — plus proche de l'Afrique centrale
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+
+  [http_service.concurrency]
+    type = "requests"
+    max_concurrency = 200
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

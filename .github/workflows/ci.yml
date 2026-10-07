@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "arena/**"]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Prisma generate
+        run: npx prisma generate
+
+      - name: Base de test (SQLite, identique au sandbox)
+        run: |
+          cp .env.example .env
+          npx prisma db push --skip-generate
+          npx tsx prisma/seed.ts
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tests (vitest)
+        run: npm run test
+
+      - name: Build production
+        run: npm run build

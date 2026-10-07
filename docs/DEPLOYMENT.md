@@ -158,3 +158,55 @@ par commit ; un rollback d'image s'accompagne d'un rollback du schéma si néces
 - [ ] Providers réels configurés **ou** mock identifié (badge Démo)
 - [ ] Super admin créé (seed) + mot de passe changé
 - [ ] Sauvegarde BDD + storage/ planifiée
+
+## 11. Déployer en 5 minutes (par cible)
+
+Le repo contient tout ce qu'il faut pour un déploiement quasi 1-clic. Choisis
+une cible :
+
+### A. Render (le plus simple — Blueprint)
+1. Compte Render → **New → Blueprint** → sélectionner le repo (branche `arena/01a1031a-arena` ou `main`).
+2. Render lit `render.yaml` → provisionne **l'app + un PostgreSQL 16** + génère `SECRET_KEY` / `MOCK_WEBHOOK_SECRET`.
+3. Après le 1er deploy : **Settings → Environment → `APP_URL`** = l'URL publique du service (obligatoire pour les liens d'invitation/QR).
+4. Terminé. Le healthcheck pointe sur `/api/health`.
+
+### B. Railway (Docker natif)
+1. Compte Railway → **New Project → Deploy from GitHub repo**.
+2. Railway utilise le `Dockerfile` (config dans `railway.json`).
+3. **Variables** à définir dans le service : `SECRET_KEY`, `MOCK_WEBHOOK_SECRET`, `APP_URL`.
+4. **Plugin** : + → **PostgreSQL** → Railway génère `DATABASE_URL` automatiquement.
+5. **Domains** (optionnel) : ajouter un domaine.
+
+### C. Fly.io (machines + Postgres managé)
+```bash
+fly launch --no-deploy            # utilise fly.toml (région cdg)
+fly postgres create eventflow-db
+fly postgres credentials eventflow-db   # → DATABASE_URL
+fly secrets set DATABASE_URL="..." SECRET_KEY="$(openssl rand -hex 32)" \
+  MOCK_WEBHOOK_SECRET="$(openssl rand -hex 32)" APP_URL="https://app.mondomaine.cd"
+fly deploy
+```
+
+### D. VPS / serveur dédié (Docker Compose + Caddy)
+```bash
+git clone <repo> && cd arena
+APP_URL=https://app.mondomaine.cd ./deploy.sh   # build + Postgres + santé
+```
+Puis pour l'accès public sécurisé : `Caddyfile.example` (TLS Let's Encrypt
+automatique) — le guide est dans le fichier.
+
+### Ce qui est commun à toutes les cibles
+- **`APP_URL`** = domaine public exact (les liens d'invitation, QR et URLs
+  médias signées en dépendent) — c'est la variable la plus importante.
+- **Providers en mock** (badge « Démo » + outbox) tant que leurs clés ne sont
+  pas définies — comportement conforme CDC, jamais d'intégration factice.
+- **Super admin** créé par le seed → **changer son mot de passe** après le
+  premier login (`SEED_SUPERADMIN_EMAIL` / `SEED_SUPERADMIN_PASSWORD` en dev).
+- **Check-list go-live** §10 à dérouler avant d'annoncer la mise en ligne.
+
+## 12. CI (GitHub Actions)
+
+`.github/workflows/ci.yml` tourne à chaque push/PR : install → `prisma
+generate` → base SQLite de test + seed → **lint** → **tests (vitest)** →
+**build production**. Un vert CI = le code est déployable (le build prod est
+exactement l'artefact servi par le `Dockerfile`).
