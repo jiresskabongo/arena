@@ -7,8 +7,7 @@ services:
     runtime: docker
     plan: free
     healthCheckPath: /api/health
-    autoDeploy:
-      enabled: true
+    autoDeploy: true
     envVars:
       # Postgres provisionné par ce même blueprint
       - key: DATABASE_URL
