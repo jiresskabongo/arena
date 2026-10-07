@@ -11,16 +11,18 @@ const nextConfig: NextConfig = {
   // à laisser en require natif côté server (sinon le bundling perd les chemins relatifs).
   serverExternalPackages: ['pdfkit', 'fontkit', 'restructure', 'iconv-lite'],
   async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-        ],
-      },
+    // L'app est prévisualisée dans un IFRAME cross-origin (preview Arena).
+    // En dev/preview on autorise l'imbrication ; en production on protège
+    // contre le clickjacking (X-Frame-Options: SAMEORIGIN).
+    const isProduction = process.env.NODE_ENV === 'production';
+    const headers: { key: string; value: string }[] = [
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
     ];
+    if (isProduction) {
+      headers.unshift({ key: 'X-Frame-Options', value: 'SAMEORIGIN' });
+    }
+    return [{ source: '/(.*)', headers }];
   },
 };
 

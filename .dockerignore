@@ -1,0 +1,18 @@
+# Image Docker — exclure du contexte de build
+node_modules
+.next
+.git
+.gitignore
+storage
+prisma/dev.db
+*.db
+*.db-journal
+.env
+.env.*
+!.env.example
+docs
+tests
+node_modules
+Dockerfile
+docker-compose.yml
+*.md

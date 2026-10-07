@@ -41,6 +41,42 @@ comportement par défaut. Pour brancher un vrai provider :
 
 ## 3. Build & lancement
 
+### 3.1 Docker — voie rapide (recommandée)
+
+Le dépôt contient un `Dockerfile` (multi-stage, `node:20-bookworm-slim`), un
+`docker-compose.yml` (app + PostgreSQL 16) et un `entrypoint.sh` :
+
+```bash
+# 1. Générer les clés
+export SECRET_KEY=$(openssl rand -hex 32)
+export MOCK_WEBHOOK_SECRET=$(openssl rand -hex 32)
+export APP_URL="https://ton-domaine.cd"
+export POSTGRES_PASSWORD="<mot-de-passe-bdd>"
+
+# 2. Lancer la stack (build image + Postgres + app)
+docker compose up -d --build
+
+# 3. Vérifier
+curl -fsS "$APP_URL/api/health"   # {"status":"ok",...}
+```
+
+- L'image bascule le schéma sur **PostgreSQL** (build arg `DB_PROVIDER`, défaut
+  `postgresql`) via `scripts/switch-db-provider.mjs` — le repo committe le
+  provider sqlite (réalité du sandbox de développement).
+- Entrypoint : `prisma db push --skip-generate` → seed idempotent
+  (`SEED_ON_BOOT`, défaut `true`) → `next start` sur `0.0.0.0:$PORT`.
+- **Réserve (MVP)** : le conteneur applique le schéma via `prisma db push`
+  plutôt que `prisma migrate deploy`, car les migrations commitées sont
+  spécifiques SQLite. Sur une base Postgres fraîche c'est équivalent ; pour
+  l'hygiène de migration ensuite : générer une migration initiale Postgres
+  (`prisma migrate dev --name init` après bascule du provider) et basculer
+  l'entrypoint sur `prisma migrate deploy`.
+- Volumes : `pgdata` (BDD) et `storage` (médias/exports) — les sauvegarder
+  (§8). Les providers restent en **mock identifié** tant que leurs variables
+  ne sont pas définies (§2).
+
+### 3.2 Sans Docker (serveur Node direct)
+
 ```bash
 npm ci
 cp .env.example .env   # remplir les valeurs

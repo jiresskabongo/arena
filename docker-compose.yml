@@ -1,0 +1,56 @@
+# EventFlow — stack de production (app + PostgreSQL 16)
+#
+#   1. cp .env.example .env && éditer (SECRET_KEY, APP_URL, MOCK_WEBHOOK_SECRET, POSTGRES_PASSWORD)
+#   2. docker compose up -d --build
+#   3. l'app écoute sur http://localhost:3000 (mettre un reverse proxy TLS devant en prod)
+#
+# Les providers sont en MOCK identifié (badge « Démo » dans l'UI) tant qu'ils
+# ne sont pas configurés — cf. docs/DEPLOYMENT.md §2.
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: eventflow
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?définir POSTGRES_PASSWORD dans .env}
+      POSTGRES_DB: eventflow
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eventflow -d eventflow"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  app:
+    build:
+      context: .
+      args:
+        DB_PROVIDER: postgresql
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://eventflow:${POSTGRES_PASSWORD}@db:5432/eventflow
+      SECRET_KEY: ${SECRET_KEY:?définir SECRET_KEY (openssl rand -hex 32)}
+      APP_URL: ${APP_URL:?définir APP_URL (URL publique de l'app)}
+      MOCK_WEBHOOK_SECRET: ${MOCK_WEBHOOK_SECRET:-}
+      SESSION_TTL_DAYS: ${SESSION_TTL_DAYS:-30}
+      # Providers — mock par défaut (mode démo clairement identifié dans l'UI)
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-mock}
+      SMS_PROVIDER: ${SMS_PROVIDER:-mock}
+      WHATSAPP_PROVIDER: ${WHATSAPP_PROVIDER:-mock}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-mock}
+      AI_PROVIDER: ${AI_PROVIDER:-mock}
+      STORAGE_PROVIDER: ${STORAGE_PROVIDER:-local}
+      SEED_ON_BOOT: ${SEED_ON_BOOT:-true}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - storage:/app/storage
+
+volumes:
+  pgdata:
+  storage:
